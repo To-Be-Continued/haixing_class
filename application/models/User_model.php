@@ -108,5 +108,43 @@ class User_model extends CI_Model {
 		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
 		$this->db->insert('users_2', filter($result,$members_info));
 	}
+
+
+	/*
+	 * login
+	 */
+	public function login($form)
+	{
+		//check u_tel
+		$form['u_pwd'] = md5($form['u_pwd']);
+		if ( ! $result = $this->db->select('u_id')
+							  ->where($form)
+				   			  ->get('users_1')
+							  ->result_array())
+		{
+			throw new Exception('密码错误', 405);
+		}
+
+		//update token
+		$where = array('u_id' => $result[0]['u_id']);
+		$user = $this->db->select('last_visit')
+						 ->where($where)
+						 ->get('sys_token')
+						 ->result_array()[0];
+		$new_data = array('last_visit' => date('Y-m-d H:i:s', time()));
+		if($this->is_timeout($user['last_visit']))
+		{
+			$new_data['token'] = $this->create_token();
+		}
+		$this->db->update('sys_token',$new_data, $where);
+
+		//return ret
+		$ret = array(
+			'token' => $this->db->select('token')
+						   ->where($where)
+						   ->get('sys_token')
+						   ->result_array()[0]['token']);
+		return $ret;
+	}
 }
 ?>
