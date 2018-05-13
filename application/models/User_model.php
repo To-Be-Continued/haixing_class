@@ -85,6 +85,7 @@ class User_model extends CI_Model {
 		//config
 		$members = array('u_tel', 'u_pwd');
 		$members_token = array('token', 'last_visit', 'u_id');
+		$members_info = array('u_id', 'u_imgpath');
 
 		//check u_tel
 		$where = array('u_tel' => $form['u_tel']);
@@ -98,7 +99,6 @@ class User_model extends CI_Model {
 
 		//DO register
 		$form['u_pwd']=md5($form['u_pwd']);
-		//$form['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
 		$this->db->insert('users_1',filter($form,$members));
 		$result = $this->db->select('u_id')
 					->where($where)
@@ -107,6 +107,9 @@ class User_model extends CI_Model {
 		$result['token'] = $this->create_token();
 		$this->db->insert('sys_token',filter($result,$members_token));
 
+		//set user_img
+		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
+		$this->db->insert('users_2', filter($result,$members_info));
 	}
 }
 ?>
