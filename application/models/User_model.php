@@ -100,10 +100,7 @@ class User_model extends CI_Model {
 		//DO register
 		$form['u_pwd']=md5($form['u_pwd']);
 		$this->db->insert('users_1',filter($form,$members));
-		$result = $this->db->select('u_id')
-					->where($where)
-					->get('users_1')
-					->result_array()[0];
+		$result['u_id'] = $this->db->insert_id();
 		$result['token'] = $this->create_token();
 		$this->db->insert('sys_token',filter($result,$members_token));
 
