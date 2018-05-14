@@ -29,7 +29,7 @@ class Seller_model extends CI_Model
 
 
 		//check token && get u_id
-		if (isset($form['token']))
+		if (isset($form['token'])) 
 		{
 			$this->load->model('User_model', 'my_user');
 			$u_id = $this->my_user->get($form);

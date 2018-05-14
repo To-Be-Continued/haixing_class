@@ -64,7 +64,7 @@ class Seller extends CI_Controller {
 						throw new Exception(strip_tags(form_error($member)));
 					}
 				}
-				return;
+				return; 
 			}
 
 			//filter && creat
@@ -77,7 +77,7 @@ class Seller extends CI_Controller {
 			output_data($e->getCode(), $e->getMessage(), array());
 			return;
 		}
-
+ 
 		//return
 		output_data(400, '发布成功', array());
 	}

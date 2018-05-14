@@ -65,6 +65,18 @@ $config = array(
 			'label' => '课程地点',
 			'rules' => 'required|max_length[50]'
 		)
+	),
+	'cou_shopping' => array(
+		array(
+			'field' => 'c_id',
+			'label' => '课程ID',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'c_num',
+			'label' => '课程数量',
+			'rules' => 'required'
+		)
 	)
 );
 ?>
