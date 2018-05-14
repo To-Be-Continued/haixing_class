@@ -43,7 +43,7 @@ class Seller_model extends CI_Model
 					  ->get('courses_1')
 					  ->result_array())
 		{
-			throw new Exception("已发布该课程", 402);
+			throw new Exception('已发布该课程', 402);
 		}
 		
 		//do insert

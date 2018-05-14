@@ -75,6 +75,7 @@ class Seller extends CI_Controller {
 		catch (Exception $e)
 		{
 			output_data($e->getCode(), $e->getMessage(), array());
+			return;
 		}
 
 		//return
