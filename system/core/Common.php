@@ -847,3 +847,82 @@ if ( ! function_exists('function_usable'))
 		return FALSE;
 	}
 }
+
+
+//-------------------------------------------------
+if ( ! function_exists('filter'))
+{
+	function filter($sour, $members)
+	{
+		$ret = array();
+		foreach ($members as $member)
+		{
+			if (isset($sour[$member]))
+			{
+				$ret[$member] = $sour[$member];
+			}
+		}
+		return $ret;
+	}
+}
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('output_data'))
+{
+	function output_data($type, $message, $data)
+	{
+		if(empty($data))
+		{
+			$data = null;
+		}
+		$data = array(
+			'type' => $type,
+			'message' => $message,
+			'data' => $data
+			);
+		print_r(json_encode($data, JSON_UNESCAPED_UNICODE));
+	}
+}
+
+// ------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('get_post'))
+{
+	function get_post()
+	{
+		$input = file_get_contents('php://input');
+		$post = (array)json_decode($input);
+		return $post;
+	}
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('get_token'))
+{
+	function get_token($hard_mode = TRUE)	//$hard_model 决定了是否要求获取到token，关闭后没获取到只会返回NULL不会报错
+	{
+		foreach ($_SERVER as $name => $value)
+       	{
+           if (substr($name, 0, 5) == 'HTTP_')
+           {
+               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+           }
+       	}
+
+		if ( ! isset($headers['Utoken']))
+		{
+			if ($hard_mode)
+			{
+				throw new Exception("没有登陆凭据，请登录", 401);
+			}
+			else
+			{
+				return NULL;
+			}
+		}
+		return $headers['Utoken'];
+	}
+}
