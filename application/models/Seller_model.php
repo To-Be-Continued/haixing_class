@@ -88,9 +88,28 @@ class Seller_model extends CI_Model
 	/*
 	 * 卖家界面_上架中课程列表
 	 */
-	public function cou_orders()
+	public function cou_grounding($form)
 	{
+		//check token && get u_id
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$u_id = $this->my_user->get($form);
+		}
 
+		//get info
+		$where = array('c_releaseid' => $u_id, 'c_state >=' => 1, 'c_state <=' => 1);
+		$ret = $this->db->select()
+						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
+						->get_where('courses_1', $where)
+						->result_array();
+
+		if (empty($ret))
+		{
+			throw new Exception("无上架课程", 406);
+		}
+
+		return $ret;
 	}
 }
 

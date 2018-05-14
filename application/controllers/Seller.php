@@ -107,6 +107,32 @@ class Seller extends CI_Controller {
 		//return
 		output_data('400', '获取成功', $data);
 	}
+
+
+	/*
+	 * 卖家界面_上架中课程列表
+	 */
+	public function cou_grounding()
+	{
+		$member = array('token');
+
+		try
+		{
+			//get token
+			$post['token'] = get_token();
+
+			$this->load->model('Seller_model', 'my_sell');
+			$data = $this->my_sell->cou_grounding(filter($post, $member));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data('400', '获取成功', $data);
+	}
 	
 }
 
