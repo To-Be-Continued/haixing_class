@@ -86,7 +86,7 @@ create table if not exists `courses_2`
     `c_time` 			timestamp,
     `c_place` 			varchar(50),
     `c_price` 			int,
-    `c_len`				varchar(20),
+    `c_len`				int,
     `c_star`			int,
     `c_love`			int,
     `c_purchase`		int,

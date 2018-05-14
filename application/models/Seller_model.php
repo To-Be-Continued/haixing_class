@@ -55,6 +55,89 @@ class Seller_model extends CI_Model
 		$this->db->insert('courses_2', filter($form, $members_info));
 	}
 
+
+	/*
+	 * 卖家界面_审核中课程列表
+	 */
+	public function cou_check($form)
+	{
+		//check token && get u_id
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		//get info
+		$where = array('c_releaseid' => $u_id, 'c_state' => 0);
+		$ret = $this->db->select()
+						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
+						->get_where('courses_1', $where)
+						->result_array();
+
+		if (empty($ret))
+		{
+			throw new Exception("无待审核课程", 406);
+		}
+
+		return $ret;
+	}
+
+
+	/*
+	 * 卖家界面_上架中课程列表
+	 */
+	public function cou_grounding($form)
+	{
+		//check token && get u_id
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		//get info
+		$where = array('c_releaseid' => $u_id, 'c_state >=' => 1, 'c_state <=' => 1);
+		$ret = $this->db->select()
+						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
+						->get_where('courses_1', $where)
+						->result_array();
+
+		if (empty($ret))
+		{
+			throw new Exception("无上架课程", 406);
+		}
+
+		return $ret;
+	}
+
+
+	/*
+	 * 卖家界面_已下架课程列表
+	 */
+	public function cou_undercarriage($form)
+	{
+		//check token && get u_id
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		//get info
+		$where = array('c_releaseid' => $u_id, 'c_state' => 3);
+		$ret = $this->db->select()
+						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
+						->get_where('courses_1', $where)
+						->result_array();
+
+		if (empty($ret))
+		{
+			throw new Exception("无下架课程", 406);
+		}
+
+		return $ret;
+	}
 }
 
 ?>
