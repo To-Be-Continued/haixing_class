@@ -84,6 +84,14 @@ class Seller_model extends CI_Model
 		return $ret;
 	}
 
+
+	/*
+	 * 卖家界面_上架中课程列表
+	 */
+	public function cou_orders()
+	{
+		
+	}
 }
 
 ?>
