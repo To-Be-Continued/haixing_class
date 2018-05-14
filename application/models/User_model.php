@@ -72,6 +72,26 @@ class User_model extends CI_Model {
 	}
 
 
+	/*
+	 * 获取用户
+	 */
+	public function get($form)
+	{
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$this->check_token($form['token']);
+		}
+		$where = array('token' => $form['token']);
+		$user = $this->db->select('u_id')
+					 ->where($where)
+					 ->get('sys_token')
+					 ->result_array()[0]['u_id'];
+
+		return $user;
+	}
+
+
 	/**********************************************************************************************
 	 * 业务接口
 	 **********************************************************************************************/
