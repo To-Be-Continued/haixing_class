@@ -59,7 +59,7 @@ class Seller_model extends CI_Model
 	/*
 	 * 卖家界面_审核中课程列表
 	 */
-	public function cou_order($form)
+	public function cou_check($form)
 	{
 		//check token
 		//check token && get u_id
@@ -90,7 +90,7 @@ class Seller_model extends CI_Model
 	 */
 	public function cou_orders()
 	{
-		
+
 	}
 }
 

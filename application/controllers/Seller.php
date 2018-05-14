@@ -86,7 +86,7 @@ class Seller extends CI_Controller {
 	/*
 	 * 卖家界面_审核中课程列表
 	 */
-	public function cou_order()
+	public function cou_check()
 	{
 		$member = array('token');
 
@@ -96,7 +96,7 @@ class Seller extends CI_Controller {
 			$post['token'] = get_token();
 
 			$this->load->model('Seller_model', 'my_sell');
-			$data = $this->my_sell->cou_order(filter($post, $member));
+			$data = $this->my_sell->cou_check(filter($post, $member));
 		}
 		catch (Exception $e) 
 		{
