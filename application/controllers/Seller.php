@@ -81,7 +81,33 @@ class Seller extends CI_Controller {
 		//return
 		output_data(400, '发布成功', array());
 	}
+
+
+	/*
+	 * 卖家界面_审核中课程列表
+	 */
+	public function cou_order()
+	{
+		$member = array('token');
+
+		try
+		{
+			//get token
+			$post['token'] = get_token();
+
+			$this->load->model('Seller_model', 'my_sell');
+			$data = $this->my_sell->cou_order(filter($post, $member));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data('400', '获取成功', $data);
+	}
 	
-} 
+}
 
 ?>
