@@ -54,7 +54,7 @@ class Seller extends CI_Controller {
 			//check form
 			$this->load->library('form_validation');
 			$this->form_validation->set_data($post);
-			if ( ! $this->form_validation->run('cou_info'))
+			if ( ! $this->form_validation->run('cou_info')) 
 			{
 				$this->load->helper('form');
 				foreach ($members as $member)

@@ -64,6 +64,34 @@ class Buyer_model extends CI_Model{
 
 		return $ret;
 	}
+	/**
+	*购物车中点击课程进入课程详情
+	*/
+	public function entercou($form)
+	{
+		//check token 
+		if(isset($token['token']))
+		{
+			$this->load->model('User_model','my_user');
+		}
+
+		$where = array('sp_id' => $form['sp_id']);
+
+		$ret = $this->db->select()
+						->join('courses_1','shopping_carts.c_id=courses_1.c_id')
+						->join('courses_2','shopping_carts.c_id=courses_2.c_id')
+						->get_where('shopping_carts',$where)
+						->result_array();
+
+		if(empty($ret))
+		{
+			throw new Exception('数据库错误',406);
+		}
+
+		return $ret;
+
+
+	}
 }
 
 ?>

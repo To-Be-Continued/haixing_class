@@ -77,6 +77,13 @@ $config = array(
 			'label' => '课程数量',
 			'rules' => 'required'
 		)
+	),
+	'cart_enter' => array(
+		array(
+			'field' => 'sp_id',
+			'label' => '购物车ID',
+			'rules' => 'required'
+		)
 	)
 );
 ?>
