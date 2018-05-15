@@ -59,7 +59,7 @@ class Seller_model extends CI_Model
 	/*
 	 * 卖家界面_审核中课程列表
 	 */
-	public function cou_check($form)
+	public function cou_check($form) 
 	{
 		//check token && get u_id
 		if (isset($form['token']))
@@ -70,7 +70,7 @@ class Seller_model extends CI_Model
 
 		//get info
 		$where = array('c_releaseid' => $u_id, 'c_state' => 0);
-		$ret = $this->db->select()
+		$ret = $this->db->select('c_name,c_imgpath,c_price,c_time,c_state,courses_1.c_id')
 						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
 						->get_where('courses_1', $where)
 						->result_array();
@@ -98,7 +98,7 @@ class Seller_model extends CI_Model
 
 		//get info
 		$where = array('c_releaseid' => $u_id, 'c_state >=' => 1, 'c_state <=' => 1);
-		$ret = $this->db->select()
+		$ret = $this->db->select('c_name,c_imgpath,c_price,c_time,c_state,courses_1.c_id')
 						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
 						->get_where('courses_1', $where)
 						->result_array();
@@ -126,7 +126,7 @@ class Seller_model extends CI_Model
 
 		//get info
 		$where = array('c_releaseid' => $u_id, 'c_state' => 3);
-		$ret = $this->db->select()
+		$ret = $this->db->select('c_name,c_imgpath,c_price,c_time,c_state,courses_1.c_id')
 						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
 						->get_where('courses_1', $where)
 						->result_array();
