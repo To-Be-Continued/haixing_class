@@ -115,6 +115,7 @@ create table if not exists `orders`
     /*0 未付款 1 已付款 2 已确认 3待评价 4 完成交易5 退款中 6 已退款*/
     `c_id`				bigint,
     `u_id`				bigint,
+    `c_num`             int,
     foreign key(c_id)references courses_1(c_id)on delete cascade on update cascade,
     foreign key(u_id)references users_1(u_id)on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
