@@ -51,7 +51,7 @@ class Buyer_model extends CI_Model{
 
 		$where = array('u_id' => $u_id);
 
-		$ret = $this->db->select('sp_id,shopping_carts.c_id,c_num,c_name,c_price')
+		$ret = $this->db->select('sp_id,shopping_carts.c_id,c_num,c_name,c_price,c_imgpath')
 						->join('courses_1','shopping_carts.c_id=courses_1.c_id')
 						->join('courses_2','shopping_carts.c_id=courses_2.c_id')
 						->get_where('shopping_carts',$where)

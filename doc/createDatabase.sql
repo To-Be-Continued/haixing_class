@@ -91,6 +91,7 @@ create table if not exists `courses_2`
     `c_love`			int,
     `c_purchase`		int,
     `c_state`			int default '0',
+     /* 0 审核中 1 已审核 2 已购买 3 已下架 4 审核失败 */
     foreign key(c_id)references courses_1(c_id) on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -111,6 +112,7 @@ create table if not exists `orders`
     `purchase_time`		timestamp,
     `order_money`		int,
     `order_state`		int default '0',
+    /*0 未付款 1 已付款 2 已确认 3待评价 4 完成交易5 退款中 6 已退款*/
     `c_id`				bigint,
     `u_id`				bigint,
     foreign key(c_id)references courses_1(c_id)on delete cascade on update cascade,
