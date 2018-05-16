@@ -73,6 +73,7 @@ class Buyer_model extends CI_Model{
 		if(isset($token['token']))
 		{
 			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
 		}
 
 		$where = array('sp_id' => $form['sp_id']);
