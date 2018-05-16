@@ -159,6 +159,63 @@ class Seller extends CI_Controller {
 		//return
 		output_data('400', '获取成功', $data);
 	}
+
+
+	/*
+     * 上传课程封面
+     */
+    public function upload_img()
+	{
+		if ($_SERVER['REQUEST_METHOD'] == "OPTIONS")
+		{
+			return;
+		}
+
+		//config
+		$members = array('token', 'c_id', 'c_imgpath');
+
+		//get m_id
+		$post['token'] = get_token();
+		$post['c_id'] = $this->input->post('c_id');
+
+		//upload config
+		$config['upload_path'] = './uploads/class_img/';
+		$config['allowed_types'] = 'jpg|png';
+		$config['file_name'] = $post['c_id'];
+		$config['overwrite'] = TRUE;
+		$config['max_size'] = 10000;
+		$config['max_width'] = 1980;
+		$config['max_height'] = 1024;
+
+		//upload
+		try
+		{
+			//do upload
+			$this->load->library('upload', $config);
+
+			if ( ! $this->upload->do_upload('userfile'))
+        	{
+            	throw new Exception($this->upload->display_errors());
+	        }
+    		else
+        	{
+        		$data = array('upload_data' => $this->upload->data());
+            	$post['c_imgpath'] = base_url() . 'uploads/class_img/' . $data['upload_data']['file_name'];;
+            	//upload & filter
+            	$this->load->model('Seller_model', 'my_sell');
+            	$ret = $this->my_sell->upload_img(filter($post, $members));
+
+        	}
+		}
+		catch(Exception $e)
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '上传成功', $ret);
+	}
 	
 }
 
