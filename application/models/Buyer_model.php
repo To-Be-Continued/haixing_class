@@ -191,6 +191,49 @@ class Buyer_model extends CI_Model{
 			throw new Exception("无法购买该课程");
 		}
 	}
+
+
+	/*
+	 * 买家订单列表
+	 */
+	public function cou_orderlist($form)
+	{
+		//check token $$ get u_id
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		$data = array('order_id', 'order_time', 'order_money', 'order_state', 
+				 	  'orders.c_id', 'c_num', 'c_imgpath','c_price');
+		$where = array('u_id' => $u_id);
+		$ret = $this->db->select($data)
+						->join('courses_1','orders.c_id=courses_1.c_id')
+						->join('courses_2','orders.c_id=courses_2.c_id')
+						->get_where('orders',$where)
+						->result_array();
+
+		foreach ($ret as $key => $value) {
+			$ret[$key]['u_tel'] =$this->db->select('u_tel')
+										  ->where($where)
+										  ->get('users_1')
+										  ->result_array()[0]['u_tel'];
+			$res = $this->db->select('u_nickname')
+							->where($where)
+							->get('users_2')
+							->result_array();
+			if (empty($res))
+			{
+				$ret[$key]['u_nickname']=null;
+			}
+			else
+			{
+				$ret[$key]['u_nickname']=$res[0]['u_nickname'];
+			}
+		}
+		return $ret;
+	}
 }
 
 ?>

@@ -298,16 +298,11 @@ class Buyer extends CI_Controller{
 		try 
 		{
 			//get post
-			$post = get_post();
-			if (empty($post))
-			{
-				$post['sp_id'] = $this->input->post('sp_id');
-			}
 			$post['token'] = get_token();
 
 			//filter && delete
 			$this->load->model('Buyer_model','my_buy');
-			$this->my_buy->move_carts(filter($post,$members));
+			$data = $this->my_buy->cou_orderlist(filter($post,$members));
 		} 
 		catch (Exception $e) 
 		{
@@ -316,7 +311,7 @@ class Buyer extends CI_Controller{
 		}
 
 		//return
-		output_data(400, '删除成功', array());
+		output_data(400, '获取成功', $data);
 	}
 }
 ?>
