@@ -84,6 +84,25 @@ $config = array(
 			'label' => '购物车ID',
 			'rules' => 'required'
 		)
+	),
+	'move_cart' => array(
+		array(
+			'field' => 'sp_id',
+			'label' => '购物车ID',
+			'rules' => 'required'
+		)
+	),
+	'cou_order' => array(
+		array(
+			'field' => 'c_id',
+			'label' => '课程ID',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'order_money',
+			'label' => '课程总金额',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

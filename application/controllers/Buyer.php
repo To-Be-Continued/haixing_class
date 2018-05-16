@@ -147,5 +147,171 @@ class Buyer extends CI_Controller{
 		output_data(400,'获取成功',$data);
 
 	}
+
+
+	/*
+	 * move one cart
+	 */
+	public function move_cart()
+	{
+		//config
+		$members = array('token', 'sp_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['sp_id'] = $this->input->post('sp_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if( ! $this->form_validation->run('move_cart'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return; 
+			}
+
+			//filter && delete
+			$this->load->model('Buyer_model','my_buy');
+			$this->my_buy->move_cart(filter($post, $members));
+
+		} 
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '删除成功', array());
+	}
+
+
+	/*
+	 * move batch carts
+	 */
+	public function move_carts()
+	{
+		//config
+		$members = array('token', 'sp_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['sp_id'] = $this->input->post('sp_id');
+			}
+			$post['token'] = get_token();
+
+			//filter && delete
+			$this->load->model('Buyer_model','my_buy');
+			$this->my_buy->move_carts(filter($post,$members));
+		} 
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '删除成功', array());
+
+	}
+
+
+	/*
+	 * 买家下订单
+	 */
+	public function cou_order()
+	{
+		//config
+		$members = array('token', 'c_id', 'order_money');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post = array(
+					'c_id' 		  => $this->input->post('c_id'),
+					'order_money' => $this->input->post('order_money')
+				);
+
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if( ! $this->form_validation->run('cou_order'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return; 
+			}
+
+			//filter && delete
+			$this->load->model('Buyer_model','my_buy');
+			$this->my_buy->cou_order(filter($post, $members));
+
+		} 
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '下单成功', array());
+	}
+
+
+	/*
+	 * 买家订单列表
+	 */
+	public function cou_orderlist()
+	{
+		//config
+		$members = array('token');
+
+		try 
+		{
+			//get post
+			$post['token'] = get_token();
+
+			//filter && delete
+			$this->load->model('Buyer_model','my_buy');
+			$data = $this->my_buy->cou_orderlist(filter($post,$members));
+		} 
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '获取成功', $data);
+	}
 }
 ?>
