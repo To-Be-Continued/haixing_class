@@ -285,5 +285,38 @@ class Buyer extends CI_Controller{
 		//return
 		output_data(400, '下单成功', array());
 	}
+
+
+	/*
+	 * 买家订单列表
+	 */
+	public function cou_orderlist()
+	{
+		//config
+		$members = array('token');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['sp_id'] = $this->input->post('sp_id');
+			}
+			$post['token'] = get_token();
+
+			//filter && delete
+			$this->load->model('Buyer_model','my_buy');
+			$this->my_buy->move_carts(filter($post,$members));
+		} 
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '删除成功', array());
+	}
 }
 ?>
