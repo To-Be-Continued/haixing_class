@@ -92,6 +92,63 @@ class Buyer_model extends CI_Model{
 
 
 	}
+
+
+	/*
+	 * move one cart
+	 */
+	public function move_cart($form)
+	{
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$where = array('sp_id' =>$form['sp_id']);
+		//check
+		if (! $this->db->select('sp_id')
+					   ->where($where)
+					   ->get('shopping_carts')
+					   ->result_array())
+		{
+			throw new Exception('数据库错误',406);
+		}
+
+		//delete
+		$this->db->delete('shopping_carts', $where);
+	}
+
+
+	/*
+	 * move batch carts
+	 */
+	public function move_carts($form)
+	{
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//check sp_id
+		if (! isset($form['sp_id']))
+		{
+			throw new Exception("购物车ID字段不能为空");
+		}
+
+		//object translate into json array
+		$arr=json_decode(json_encode($form['sp_id']), true);
+		if (empty($arr))
+		{
+			throw new Exception("至少含有一个购物车ID字段");
+		}
+		foreach ($arr as $key => $value) 
+		{
+			$where = array('sp_id' => $value);
+			$this->db->delete('shopping_carts', $where);
+		}
+	}
 }
 
 ?>
