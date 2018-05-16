@@ -108,7 +108,7 @@ create table if not exists `shopping_carts`
 create table if not exists `orders`
 (
 	`order_id`			bigint auto_increment primary key not null,
-    `order_time`		timestamp,
+    `order_time`		timestamp default current_timestamp,
     `purchase_time`		timestamp,
     `order_money`		int,
     `order_state`		int default '0',
