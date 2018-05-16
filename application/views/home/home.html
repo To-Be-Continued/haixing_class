@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>海星课堂后端管理系统</title>
+	<script type="text/javascript">
+		alert("登入成功");
+	</script>
+</head>
+	<frameset rows="55,*" frameborder="no">
+		<frame src="<?php echo site_url('Admin/top')?>" name="top" scrolling="no" noresize="noresize">
+		</frame>
+		<frameset cols="160,*" frameborder="no">
+			<frame src="<?php echo site_url('Admin/left')?>" name="left" scrolling="no" noresize="noresize">
+			</frame>
+			<frame src="<?php echo site_url('Admin/main')?>" name="main" scrolling="no" noresize="noresize"
+					id="mianframe"></frame>
+		</frameset>
+	</frameset>
+</html>

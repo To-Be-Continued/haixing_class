@@ -1,0 +1,58 @@
+<html>
+<head>
+	<title>海星课堂后端管理系统</title>
+	<style type="text/css">
+		body{
+			position: relative;
+		}
+		.login{
+			position: absolute;
+			height: 300px;
+			width: 500px;
+			margin: auto;
+			padding: 0;
+			left: 0;
+			right: 0;
+			top:20%;
+			background-color: #e2e2e2;
+		}
+		td{
+			width: 500px;
+			height: 75px;
+			text-align: center;		}
+		#title{
+			background-color: #bcbcbc;
+		}
+	</style>
+</head>
+<body>
+	<div class="login">
+		<form id="form" action="<?php echo site_url('Admin/enter_home')?>" method="post">
+			<table cellspacing="0">
+				<tr>
+					<td id="title">
+						海星课堂后端管理系统
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>账号：</span>
+						<input id="u_tel" type="text" name="u_tel">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>密码：</span>
+						<input id="u_pwd" type="password" name="u_pwd">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="submit" value="登录">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
