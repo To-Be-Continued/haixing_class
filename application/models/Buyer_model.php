@@ -157,13 +157,14 @@ class Buyer_model extends CI_Model{
 	public function cou_order($form)
 	{
 		//config
-		$members = array('c_id', 'order_money');
+		$members = array('c_id', 'order_money', 'u_id');
 
 		//check token
 		if (isset($form['token']))
 		{
 			$this->load->model('User_model','my_user');
-			$this->my_user->check_token($form['token']);
+			$u_id = $this->my_user->get($form);
+			$form['u_id'] = $u_id;
 		}
 
 		//check c_id
