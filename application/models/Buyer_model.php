@@ -149,6 +149,48 @@ class Buyer_model extends CI_Model{
 			$this->db->delete('shopping_carts', $where);
 		}
 	}
+
+
+	/*
+	 * 买家下订单未付款
+	 */
+	public function cou_order($form)
+	{
+		//config
+		$members = array('c_id', 'order_money');
+
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//check c_id
+		if ( ! $this->db->select('c_id')
+						->where(array('c_id' => $form['c_id']))
+						->get('courses_1')
+						->result_array())
+		{
+			throw new Exception("数据库错误", 406);
+		}
+
+		//check state
+		$where = array('c_id' => $form['c_id']);
+		if (  $this->db->select('c_state')
+						->where($where)
+						->get('courses_2')
+						->result_array()[0]['c_state'] == 1)
+		{
+			$this->db->insert('orders', filter($form, $members));
+			$data = array('c_state' => 2);
+			$this->db->update('courses_2', $data, $where);
+		}
+		else
+		{
+			throw new Exception("无法购买该课程");
+		}
+	}
 }
 
 ?>
