@@ -142,7 +142,7 @@ class User_model extends CI_Model {
 				   			  ->get('users_1')
 							  ->result_array())
 		{
-			throw new Exception('密码错误', 405);
+			throw new Exception('密码错误或手机号错误', 405);
 		}
 
 		//update token
