@@ -138,6 +138,39 @@ class Seller_model extends CI_Model
 
 		return $ret;
 	}
+
+
+	/*
+	 * 上传课程头像
+	 */
+	public function upload_img($form)
+	{
+		//config
+		$member = array('c_imgpath');
+
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//check c_id
+		$where = array('c_id' => $form['c_id']);
+		if ( ! $ret = $this->db->select('c_id')
+							   ->where($where)
+							   ->get('courses_1')
+							   ->result_array())
+		{
+			throw new Exception("课程不存在");
+		}
+
+		//update
+		$data = filter($form, $member);
+		$this->db->update('courses_1', $data, $where);
+
+		return $data;
+	}
 }
 
 ?>

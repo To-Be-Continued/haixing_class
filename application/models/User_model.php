@@ -166,5 +166,28 @@ class User_model extends CI_Model {
 						   ->result_array()[0]['token']);
 		return $ret;
 	}
+
+
+	/*
+	 * 上传头像
+	 */
+	public function upload_img($form)
+	{
+		//config
+		$member = array('u_imgpath');
+
+		//check token
+		if (isset($form['token']))
+		{
+			$this->check_token($form['token']);
+		}
+
+		//select user
+		$where = array('u_id' => $form['u_id']);
+		$data = filter($form, $member);
+		$this->db->update('users_2', $data, $where);
+
+		return $data;
+	}
 }
 ?>
