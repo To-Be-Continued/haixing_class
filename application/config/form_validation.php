@@ -103,6 +103,13 @@ $config = array(
 			'label' => '课程总金额',
 			'rules' => 'required'
 		)
+	),
+	'entercou' => array(
+		array(
+			'field' => 'c_id',
+			'label' => '课程ID',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

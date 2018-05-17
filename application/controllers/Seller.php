@@ -216,6 +216,56 @@ class Seller extends CI_Controller {
 		//return
 		output_data(400, '上传成功', $ret);
 	}
+
+	/**
+	*卖家版-点击课程进入课程详情
+	*/
+	public function cou_entercou()
+	{
+		//config
+		$members = array('token','c_id');
+
+		try
+		{
+			//get post
+			$post = get_post();
+			if(empty($post))
+			{
+				$post = array('c_id' => $this->input->post('c_id'));
+			}
+
+			//get token
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if( ! $this->form_validation->run('entercou'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return; 
+			}
+			
+			//filter && return data
+			$this->load->model('Seller_model','my_sell');
+			$ret = $this->my_sell->cou_entercou($post);
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return 
+		output_data(400,'获取成功',$ret);
+	}
 	
 }
 

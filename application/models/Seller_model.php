@@ -171,6 +171,38 @@ class Seller_model extends CI_Model
 
 		return $data;
 	}
+
+	/**
+	*卖家端点击进入课程详情
+	*/
+	public function cou_entercou($form)
+	{
+		//check && get u_id
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+		$where = array('courses_1.c_id' => $form['c_id']);
+		$data = array('c_imgpath','c_name','c_major','c_time','c_price',
+					'c_intro','c_detail','c_star','c_purchase');
+		$ret['c_info'] = $this->db->select($data)
+				->join('courses_2','courses_1.c_id=courses_2.c_id')
+				//->join('tags','courses_1.c_id=tags.c_id')
+				->get_where('courses_1',$where)
+				->result_array();
+		//这门课程总收益
+		$ret['c_info'][0]['c_totalmoney'] = $ret['c_info'][0]['c_purchase'] *
+		$ret['c_info'][0]['c_price'];
+		//所有课程销量情况
+		$w = array('users_1.u_id' => $u_id);
+		$ret['u_info'] = $this->db->select('u_sex,u_birth,u_major,u_coucsr,u_cousum,u_cousales')
+									->join('users_3','users_1.u_id=users_3.u_id')
+									->get_where('users_1',$w)
+									->result_array();
+
+		return $ret;
+	}
 }
 
 ?>
