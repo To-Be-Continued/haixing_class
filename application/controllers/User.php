@@ -188,6 +188,59 @@ class User extends CI_Controller {
 
 
 	/*
+	 *
+	 */
+	public function WeChatregister()
+	{
+		//config
+		$members = array('code', 'u_tel', 'u_pwd');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post = array(
+					'code' => $this->input->post('code'),
+					'u_tel' => $this->input->post('u_tel'),
+					'u_pwd' => $this->input->post('u_pwd')
+				);
+			}
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+
+			if ( ! $this->form_validation->run('wechatregister'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && register
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->WeChatregister(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		//return
+		output_data(400, '注册成功', array());
+	}
+
+
+	/*
 	 * 微信登录
 	 */
 	public function WeChatlogin()

@@ -37,6 +37,21 @@ class User_model extends CI_Model {
 	}
 
 
+	/*
+	 * 获取openid
+	 */
+	private function getopenid($code)
+	{
+		$appid = 'wxc84bc967d806aa31';
+		$secret = 'fa5299e32a1bae1024d37ae69903553c';
+		$json = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
+		header("Content-Type: application/json");
+		$js =  file_get_contents($json);
+		$data = json_decode($js, true);
+		return $data;
+	}
+
+
 	/**********************************************************************************************
 	 * 公开工具集
 	 **********************************************************************************************/
@@ -188,6 +203,43 @@ class User_model extends CI_Model {
 		$this->db->update('users_2', $data, $where);
 
 		return $data;
+	}
+
+
+	/*
+	 * 微信注册
+	 */
+	public function WeChatregister($form)
+	{
+		//config
+		$members = array('u_tel', 'u_pwd', 'openid');
+		$members_token = array('token', 'last_visit', 'u_id');
+		$members_info = array('u_id', 'u_imgpath');
+
+		//check u_tel
+		$where = array('u_tel' => $form['u_tel']);
+		if ( $result = $this->db->select('u_tel')
+			->where($where)
+			->get('users_1')
+			->result_array())
+		{
+			throw new Exception('该手机号已注册', 403);
+		}
+
+		//get openid
+		$res = $this->getopenid($form['code']);
+		$form['openid'] = $res['openid'];
+		
+		//DO register
+		$form['u_pwd']=md5($form['u_pwd']);
+		$this->db->insert('users_1',filter($form,$members));
+		$result['u_id'] = $this->db->insert_id();
+		$result['token'] = $this->create_token();
+		$this->db->insert('sys_token',filter($result,$members_token));
+
+		//set user_img
+		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
+		$this->db->insert('users_2', filter($result,$members_info));
 	}
 
 
