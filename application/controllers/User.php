@@ -284,6 +284,56 @@ class User extends CI_Controller {
 
 		output_data(400, '登录成功', $data);
 	}
+
+
+	/*
+	 * 小程序获取手机号
+	 */
+	public function get_tel()
+	{
+		//config
+		$members = array('code', 'encryptedData', 'iv');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post = array(
+					'code' => $this->input->post('code'),
+					'encryptedData' => $this->input->post('encryptedData'),
+					'iv' => $this->input->post('iv')
+				);
+			}
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if ( ! $this->form_validation->run('get_tel'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & get u_tel
+			$this->load->model('User_model', 'my_user');
+			$data = $this->my_user->get_tel(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '获取成功', $data);
+	}
 } 
 
 ?>

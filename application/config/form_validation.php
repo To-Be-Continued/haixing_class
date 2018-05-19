@@ -127,6 +127,23 @@ $config = array(
 			'label' => '课程ID',
 			'rules' => 'required'
 		)
+	),
+	'get_tel' => array(
+		array(
+			'field' => 'code',
+			'label' => 'code',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'encryptedData',
+			'label' => '加密数据',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'iv',
+			'label' => '初始向量',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

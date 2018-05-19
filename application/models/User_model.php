@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+include_once "wxBizDataCrypt.php";
 
 class User_model extends CI_Model {
 
@@ -42,8 +43,9 @@ class User_model extends CI_Model {
 	 */
 	private function getopenid($code)
 	{
-		$appid = 'wxc84bc967d806aa31';
-		$secret = 'fa5299e32a1bae1024d37ae69903553c';
+		$appid = 'wx196440f4d0464441';
+		//$secret = 'fa5299e32a1bae1024d37ae69903553c';
+		$secret = '9fe0991c34a49ac73d4a73ba1d7d4b40';
 		$json = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
 		header("Content-Type: application/json");
 		$js =  file_get_contents($json);
@@ -228,8 +230,12 @@ class User_model extends CI_Model {
 
 		//get openid
 		$res = $this->getopenid($form['code']);
+		if (!isset($res['openid']))
+		{
+			throw new Exception("invalid code");
+		}
 		$form['openid'] = $res['openid'];
-		
+
 		//DO register
 		$form['u_pwd']=md5($form['u_pwd']);
 		$this->db->insert('users_1',filter($form,$members));
@@ -248,14 +254,14 @@ class User_model extends CI_Model {
 	 */
 	public function WeChatlogin($form)
 	{
+		//config
 		$members = array('token', 'openid', 'session_key');
-		$appid = 'wxc84bc967d806aa31';
-		$secret = 'fa5299e32a1bae1024d37ae69903553c';
-		$code = $form['code'];	
-		$json = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
-		header("Content-Type: application/json");
-		$js =  file_get_contents($json);
-		$data = json_decode($js, true);
+
+		$data = $this->getopenid($form['code']);
+		if (! isset($data['openid']))
+		{
+			throw new Exception("invalid code");
+		}
 
 		//check open_id
 		$wheres = array('openid' => $data['openid']);
@@ -280,12 +286,33 @@ class User_model extends CI_Model {
 		$this->db->update('sys_token',$new_data, $where);
 
 		//return ret
-		$ret = array(
-			'token' => $this->db->select('token')
-						   ->where($where)
-						   ->get('sys_token')
-						   ->result_array()[0]['token']);
-		return $ret;
+		$data['token'] = $this->db->select('token')
+						 		  ->where($where)
+						   		  ->get('sys_token')
+								  ->result_array()[0]['token'];
+		return $data;
+	}
+
+
+	/*
+	 * 获取phone number
+	 */
+	public function get_tel($form)
+	{
+		$data = $this->getopenid($form['code']);
+		if (! isset($data['openid']))
+		{
+			throw new Exception("invalid code");
+		}
+
+		$pc = new wxBizDataCrypt('wx196440f4d0464441', $data['session_key']);
+		$errCode = $pc->decryptData($form['encryptedData'], $form['iv'], $data);
+		if ($errCode)
+		{
+			throw new Exception('获取失败');
+		}
+		else
+			return json_decode($data, true);
 	}
 }
 ?>
