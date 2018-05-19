@@ -185,6 +185,52 @@ class User extends CI_Controller {
 		//return
 		output_data(400, '上传成功', $ret);
 	}
+
+
+	/*
+	 * 微信登录
+	 */
+	public function WeChatlogin()
+	{
+		//config
+		$members = array('code');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['code'] = $this->input->post('code');
+			}
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('code', 'code', 'required');
+			if ( ! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & login
+			$this->load->model('User_model', 'my_user');
+			$data = $this->my_user->WeChatlogin(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '登录成功', $data);
+	}
 } 
 
 ?>

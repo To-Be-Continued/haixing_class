@@ -189,5 +189,51 @@ class User_model extends CI_Model {
 
 		return $data;
 	}
+
+
+	/*
+	 * 微信登录
+	 */
+	public function WeChatlogin($form)
+	{
+		$members = array('token', 'openid', 'session_key');
+		$appid = 'wxc84bc967d806aa31';
+		$secret = 'fa5299e32a1bae1024d37ae69903553c';
+		$code = $form['code'];	
+		$json = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
+		header("Content-Type: application/json");
+		$js =  file_get_contents($json);
+		$data = json_decode($js, true);
+
+		//check open_id
+		$wheres = array('openid' => $data['openid']);
+		if ( ! $result = $this->db->select('u_id')
+							  ->where($wheres)
+				   			  ->get('users_1')
+							  ->result_array())
+		{
+			throw new Exception('账号不存在', 406);
+		}
+		//update token
+		$where = array('u_id' => $result[0]['u_id']);
+		$user = $this->db->select('last_visit')
+						 ->where($where)
+						 ->get('sys_token')
+						 ->result_array()[0];
+		$new_data = array('last_visit' => date('Y-m-d H:i:s', time()));
+		if($this->is_timeout($user['last_visit']))
+		{
+			$new_data['token'] = $this->create_token();
+		}
+		$this->db->update('sys_token',$new_data, $where);
+
+		//return ret
+		$ret = array(
+			'token' => $this->db->select('token')
+						   ->where($where)
+						   ->get('sys_token')
+						   ->result_array()[0]['token']);
+		return $ret;
+	}
 }
 ?>
