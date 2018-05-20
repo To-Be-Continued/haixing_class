@@ -145,7 +145,7 @@ class User_model extends CI_Model {
 		//set user_img
 		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
 		$this->db->insert('users_2', filter($result, $members_info));
-		$this->db->insert('users_3', filter($result, $members_3))
+		$this->db->insert('users_3', filter($result, $members_3))；
 	}
 
 
