@@ -134,6 +134,13 @@ $config = array(
 			'label' => '初始向量',
 			'rules' => 'required'
 		)
+	),
+	'cou_examine' => array(
+		array(
+			'field' => 'c_id',
+			'label' => '课程ID',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

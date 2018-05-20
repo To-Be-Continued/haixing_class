@@ -10,6 +10,10 @@ class Admin extends CI_Controller
 	******************/
 	public function test()
 	{
+		$post = array(
+   			'v_id' => $this->input->post('v_id')
+   		);
+		echo json_encode($post);
 	}
 
 	/********************************************************************************
@@ -28,7 +32,6 @@ class Admin extends CI_Controller
 	*/
 	public function login()
 	{
-
 		$this->load->view('login/login.html');
 	}
 
@@ -109,6 +112,78 @@ class Admin extends CI_Controller
 	public function main()
 	{
 		$this->load->view('home/main.html');
+	}
+
+	/**
+	*get table data
+	*/
+	public function cou_list()
+	{
+		//config
+		$member = array('token');
+
+		try
+		{
+			//get token
+			$post['token'] = $this->input->post('token');
+			//get data
+			$this->load->model('Admin_model','my_admin');
+			$ret = $this->my_admin->cou_list(filter($post,$member));
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return
+		output_data(400, '获取成功',$ret);	
+	}
+	/**
+	*cou_examine
+	*/
+	public function cou_examine()
+	{
+		//config
+		$members = array ('token','c_id');
+
+		try{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['c_id'] = $this->input->post('c_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if( ! $this->form_validation->run('cou_examine'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return; 
+			}
+
+			//filter && delete
+			$this->load->model('Admin_model','my_admin');
+			$this->my_admin->cou_examine(filter($post, $members));
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return
+		output_data(400, '审核通过', array());
 	}
 }
 ?>
