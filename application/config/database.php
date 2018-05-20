@@ -100,7 +100,6 @@ $db['wang'] = array(
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '9527Abc.',
-	//'password' => '40B764786e3c',
 	'database' => 'haixing',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

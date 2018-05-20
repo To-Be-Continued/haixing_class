@@ -29,8 +29,8 @@ class Seller extends CI_Controller {
 	public function cou_release()
 	{
 		//config
-		$members = array('token', 'c_name', 'c_intro', 'c_major', 'c_detail', 
-						 'c_imgpath', 'c_price', 'c_len', 'c_time', 'c_place');
+		$members = array('token', 'c_name', 'c_major', 'c_detail', 
+						 'c_imgpath', 'c_price', 'c_time', 'c_place','tags');
 
 		try
 		{
@@ -40,13 +40,12 @@ class Seller extends CI_Controller {
 			{
 				$post = array(
 					'c_name'   => $this->input->post('c_name')  ,
-    				'c_intro'  => $this->input->post('c_intro') ,
 				    'c_major'  => $this->input->post('c_major') ,
 				    'c_detail' => $this->input->post('c_detail'),
 				    'c_price'  => $this->input->post('c_price') ,
-				    'c_len'    => $this->input->post('c_len')   ,
 				    'c_time'   => $this->input->post('c_time')  ,
-				    'c_place'  => $this->input->post('c_place')
+				    'c_place'  => $this->input->post('c_place'),
+				    'tags'     => $this->input->post('tags')
 				);
 			}
 			$post['token'] = get_token();

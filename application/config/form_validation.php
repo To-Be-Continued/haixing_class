@@ -48,11 +48,6 @@ $config = array(
 			'rules' => 'required|max_length[20]'
 		),
 		array(
-			'field' => 'c_intro',
-			'label' => '课程介绍',
-			'rules' => 'required|max_length[20]'
-		),
-		array(
 			'field' => 'c_major',
 			'label' => '课程专业',
 			'rules' => 'required|max_length[20]'
@@ -65,11 +60,6 @@ $config = array(
 		array(
 			'field' => 'c_price',
 			'label' => '课程价格',
-			'rules' => 'required'
-		),
-		array(
-			'field' => 'c_len',
-			'label' => '课程时长',
 			'rules' => 'required'
 		),
 		array(

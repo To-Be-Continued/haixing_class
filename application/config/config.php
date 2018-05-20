@@ -24,8 +24,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = 'http://39.108.235.76/haixing/';
-//$config['base_url'] = 'http://119.23.105.239/haixing/';
-//$config['base_url'] = 'http://192.168.43.36/haixing/'; 
 /*
 |--------------------------------------------------------------------------
 | Index File

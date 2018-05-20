@@ -24,9 +24,8 @@ class Seller_model extends CI_Model
 	public function cou_release($form)
 	{
 		//config
-		$members = array('c_name', 'c_intro', 'c_major', 'c_detail', 'c_imgpath', 'c_releaseid');
-		$members_info = array('c_id', 'c_price', 'c_len', 'c_time', 'c_place');
-
+		$members = array('c_name', 'c_major', 'c_detail', 'c_imgpath', 'c_releaseid');
+		$members_info = array('c_id', 'c_price', 'c_time', 'c_place');
 
 		//check token && get u_id
 		if (isset($form['token'])) 
@@ -35,8 +34,16 @@ class Seller_model extends CI_Model
 			$u_id = $this->my_user->get($form);
 		}
 
+		//object translate into json array
+		$arr = json_decode(json_encode($form['tags']),true);
+		if(empty($arr))
+		{
+			throw new Exception("至少含有一个标签");
+			
+		}
+
 		//check if exist
-		$arr = array('c_intro', 'c_major', 'c_name', 'c_detail');
+		$arr = array('c_major', 'c_name', 'c_detail');
 		$data = filter($form, $arr);
 		if ( $this->db->select()
 					  ->like($data)
@@ -53,6 +60,14 @@ class Seller_model extends CI_Model
 		$cid=$this->db->insert_id();
 		$form['c_id'] = $cid;
 		$this->db->insert('courses_2', filter($form, $members_info));
+
+		foreach ($arr as $key => $value) {
+			$where = array(
+				'tag_text' => $value,
+				'c_id'     => $form['c_id']
+			);
+			$this->db->insert('tags',$where);			
+		}
 	}
 
 
