@@ -207,6 +207,10 @@ class Seller_model extends CI_Model
 				->get_where('courses_1',$where)
 				->result_array();
 		//这门课程总收益
+		if (! empty($ret) )
+		{
+			throw new Exception("invalid c_id", 406);
+		}
 		$ret['c_info'][0]['c_totalmoney'] = $ret['c_info'][0]['c_purchase'] *
 		$ret['c_info'][0]['c_price'];
 		//所有课程销量情况
