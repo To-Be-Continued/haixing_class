@@ -273,6 +273,41 @@ class Buyer_model extends CI_Model{
 								->result_array();
 		return $ret;
 	}
+
+
+	/**
+	 * 全部课程列表
+	 **/
+	public function get_allcou($form)
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('courses_1.c_id', 'c_name', 'c_star','c_time', 
+		 			  'c_place', 'c_price', 'c_imgpath');
+		$ret = $this->db->select($data)
+						->join('courses_2','courses_1.c_id=courses_2.c_id')
+						->get_where('courses_1')
+						->result_array();
+		
+		if (empty($ret))
+		{
+			throw new Exception("暂无课程", 406);
+		}
+		foreach ($ret as $key => $value) {
+			$ret[$key]['tags'] = $this->db->select('tag_text, tag_id')
+										  ->where(array('c_id' => $value['c_id']))
+										  ->get('tags')
+										  ->result_array();
+		}
+
+		//return
+		return $ret;
+	}
 }
 
 ?>

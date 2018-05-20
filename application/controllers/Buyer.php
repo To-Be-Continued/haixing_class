@@ -367,5 +367,31 @@ class Buyer extends CI_Controller{
 	}
 
 
+	/*
+	 * 获取课程列表
+	 */
+	public function get_allcou()
+	{
+		//config
+		$member = array('token');
+
+		try
+		{
+			//get token
+			$post['token'] = get_token();
+
+			//filter && get list
+			$this->load->model('Buyer_model', 'my_buy');
+			$data = $this->my_buy->get_allcou(filter($post, $member));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data('400', '获取成功', $data);
+	}
 }
 ?>
