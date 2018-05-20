@@ -30,7 +30,7 @@ class Seller extends CI_Controller {
 	{
 		//config
 		$members = array('token', 'c_name', 'c_intro', 'c_major', 'c_detail', 
-						 'c_img', 'c_price', 'c_len', 'c_time', 'c_place');
+						 'c_imgpath', 'c_price', 'c_len', 'c_time', 'c_place');
 
 		try
 		{
@@ -50,6 +50,7 @@ class Seller extends CI_Controller {
 				);
 			}
 			$post['token'] = get_token();
+			$post['c_imgpath'] = $this->upload();
 
 			//check form
 			$this->load->library('form_validation');
@@ -174,7 +175,7 @@ class Seller extends CI_Controller {
 		//config
 		$members = array('token', 'c_id', 'c_imgpath');
 
-		//get m_id
+		//get c_id
 		$post['token'] = get_token();
 		$post['c_id'] = $this->input->post('c_id');
 

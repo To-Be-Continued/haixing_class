@@ -12,6 +12,23 @@ $config = array(
 			'rules' => 'required|max_length[32]'
 		)
 	),
+	'wechatregister' => array(
+		array(
+			'field' => 'code',
+			'label' => 'code',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_tel',
+			'label' => '手机号',
+			'rules' => 'required|max_length[11]'
+		),
+		array(
+			'field' => 'u_pwd',
+			'label' => '密码',
+			'rules' => 'required|max_length[32]'
+		)
+	),
 	'login' => array(
 		array(
 			'field' => 'u_tel',
@@ -108,6 +125,23 @@ $config = array(
 		array(
 			'field' => 'c_id',
 			'label' => '课程ID',
+			'rules' => 'required'
+		)
+	),
+	'get_tel' => array(
+		array(
+			'field' => 'code',
+			'label' => 'code',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'encryptedData',
+			'label' => '加密数据',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'iv',
+			'label' => '初始向量',
 			'rules' => 'required'
 		)
 	)

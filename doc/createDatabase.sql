@@ -5,6 +5,7 @@ create table if not exists `users_1`
 	`u_id` 				bigint auto_increment primary key not null,
     `u_iden` 			char(18),
     `u_tel` 			char(11) not null,
+    `openid`            varchar(100) not null,
     `u_email` 			varchar(20),
     `u_qq`				varchar(20),
     `u_pwd`				varchar(32) not null,

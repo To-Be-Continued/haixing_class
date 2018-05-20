@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+include_once "wxBizDataCrypt.php";
 
 class User_model extends CI_Model {
 
@@ -34,6 +35,22 @@ class User_model extends CI_Model {
 		$pre_unix = human_to_unix($last_visit);
 		$now_unix = time();
 		return $now_unix - $pre_unix < 0;
+	}
+
+
+	/*
+	 * 获取openid
+	 */
+	private function getopenid($code)
+	{
+		$appid = 'wx196440f4d0464441';
+		//$secret = 'fa5299e32a1bae1024d37ae69903553c';
+		$secret = '9fe0991c34a49ac73d4a73ba1d7d4b40';
+		$json = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
+		header("Content-Type: application/json");
+		$js =  file_get_contents($json);
+		$data = json_decode($js, true);
+		return $data;
 	}
 
 
@@ -106,6 +123,7 @@ class User_model extends CI_Model {
 		$members = array('u_tel', 'u_pwd');
 		$members_token = array('token', 'last_visit', 'u_id');
 		$members_info = array('u_id', 'u_imgpath');
+		$members_3 = array('u_id');
 
 		//check u_tel
 		$where = array('u_tel' => $form['u_tel']);
@@ -126,7 +144,8 @@ class User_model extends CI_Model {
 
 		//set user_img
 		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
-		$this->db->insert('users_2', filter($result,$members_info));
+		$this->db->insert('users_2', filter($result, $members_info));
+		$this->db->insert('users_3', filter($result, $members_3))
 	}
 
 
@@ -188,6 +207,116 @@ class User_model extends CI_Model {
 		$this->db->update('users_2', $data, $where);
 
 		return $data;
+	}
+
+
+	/*
+	 * 微信注册
+	 */
+	public function WeChatregister($form)
+	{
+		//config
+		$members = array('u_tel', 'u_pwd', 'openid');
+		$members_token = array('token', 'last_visit', 'u_id');
+		$members_info = array('u_id', 'u_imgpath');
+		$members_3 = array('u_id');
+
+		//check u_tel
+		$where = array('u_tel' => $form['u_tel']);
+		if ( $result = $this->db->select('u_tel')
+			->where($where)
+			->get('users_1')
+			->result_array())
+		{
+			throw new Exception('该手机号已注册', 403);
+		}
+
+		//get openid
+		$res = $this->getopenid($form['code']);
+		if (!isset($res['openid']))
+		{
+			throw new Exception("invalid code");
+		}
+		$form['openid'] = $res['openid'];
+
+		//DO register
+		$form['u_pwd']=md5($form['u_pwd']);
+		$this->db->insert('users_1',filter($form,$members));
+		$result['u_id'] = $this->db->insert_id();
+		$result['token'] = $this->create_token();
+		$this->db->insert('sys_token',filter($result,$members_token));
+
+		//set user_img
+		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
+		$this->db->insert('users_2', filter($result,$members_info));
+		$this->db->insert('users_3', filter($result, $members_3));
+	}
+
+
+	/*
+	 * 微信登录
+	 */
+	public function WeChatlogin($form)
+	{
+		//config
+		$members = array('token', 'openid', 'session_key');
+
+		$data = $this->getopenid($form['code']);
+		if (! isset($data['openid']))
+		{
+			throw new Exception("invalid code");
+		}
+
+		//check open_id
+		$wheres = array('openid' => $data['openid']);
+		if ( ! $result = $this->db->select('u_id')
+							  ->where($wheres)
+				   			  ->get('users_1')
+							  ->result_array())
+		{
+			throw new Exception('账号不存在', 406);
+		}
+		//update token
+		$where = array('u_id' => $result[0]['u_id']);
+		$user = $this->db->select('last_visit')
+						 ->where($where)
+						 ->get('sys_token')
+						 ->result_array()[0];
+		$new_data = array('last_visit' => date('Y-m-d H:i:s', time()));
+		if($this->is_timeout($user['last_visit']))
+		{
+			$new_data['token'] = $this->create_token();
+		}
+		$this->db->update('sys_token',$new_data, $where);
+
+		//return ret
+		$data['token'] = $this->db->select('token')
+						 		  ->where($where)
+						   		  ->get('sys_token')
+								  ->result_array()[0]['token'];
+		return $data;
+	}
+
+
+	/*
+	 * 获取phone number
+	 */
+	public function get_tel($form)
+	{
+		$data = $this->getopenid($form['code']);
+		if (! isset($data['openid']))
+		{
+			throw new Exception("invalid code");
+		}
+
+		$pc = new wxBizDataCrypt('wx196440f4d0464441', $data['session_key']);
+		$errCode = $pc->decryptData($form['encryptedData'], $form['iv'], $data);
+		if ($errCode)
+		{
+			throw new Exception('获取失败');
+		}
+		else
+			return json_decode($data, true);
 	}
 }
 ?>
