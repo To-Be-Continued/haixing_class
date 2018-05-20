@@ -207,7 +207,7 @@ class Seller_model extends CI_Model
 				->get_where('courses_1',$where)
 				->result_array();
 		//这门课程总收益
-		if (! empty($ret) )
+		if ( empty($ret) )
 		{
 			throw new Exception("invalid c_id", 406);
 		}
