@@ -123,6 +123,7 @@ class User_model extends CI_Model {
 		$members = array('u_tel', 'u_pwd');
 		$members_token = array('token', 'last_visit', 'u_id');
 		$members_info = array('u_id', 'u_imgpath');
+		$members_3 = array('u_id');
 
 		//check u_tel
 		$where = array('u_tel' => $form['u_tel']);
@@ -143,7 +144,8 @@ class User_model extends CI_Model {
 
 		//set user_img
 		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
-		$this->db->insert('users_2', filter($result,$members_info));
+		$this->db->insert('users_2', filter($result, $members_info));
+		$this->db->insert('users_3', filter($result, $members_3))
 	}
 
 
@@ -217,6 +219,7 @@ class User_model extends CI_Model {
 		$members = array('u_tel', 'u_pwd', 'openid');
 		$members_token = array('token', 'last_visit', 'u_id');
 		$members_info = array('u_id', 'u_imgpath');
+		$members_3 = array('u_id');
 
 		//check u_tel
 		$where = array('u_tel' => $form['u_tel']);
@@ -246,6 +249,7 @@ class User_model extends CI_Model {
 		//set user_img
 		$result['u_imgpath'] = base_url() . 'uploads/user_img/user.jpg';
 		$this->db->insert('users_2', filter($result,$members_info));
+		$this->db->insert('users_3', filter($result, $members_3));
 	}
 
 
