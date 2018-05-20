@@ -61,7 +61,7 @@ class Seller_model extends CI_Model
 		
 		//do insert
 		$form['c_releaseid'] = $u_id;
-		$form['c_imgpath'] = base_url() . 'uploads/class_img/class.jpg';
+		//$form['c_imgpath'] = base_url() . 'uploads/class_img/class.jpg';
 		$this->db->insert('courses_1', filter($form, $members));
 		$cid=$this->db->insert_id();
 		$form['c_id'] = $cid;
