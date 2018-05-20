@@ -34,14 +34,20 @@ class Seller_model extends CI_Model
 			$u_id = $this->my_user->get($form);
 		}
 
+		if(!isset($form['tags']))
+		{
+			throw new Exception("标签字段不能为空", 1);
+			
+		}
+
 		//object translate into json array
 		$arr = json_decode(json_encode($form['tags']),true);
+		
 		if(empty($arr))
 		{
 			throw new Exception("至少含有一个标签");
 			
 		}
-
 		//check if exist
 		$arr = array('c_major', 'c_name', 'c_detail');
 		$data = filter($form, $arr);
