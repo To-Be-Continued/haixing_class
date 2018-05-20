@@ -16,6 +16,7 @@ class Buyer_model extends CI_Model{
 	 * 业务接口
 	 **********************************************************************************************/
 
+
 	/**
 	*take course into shoppingcart
 	*/
@@ -37,6 +38,8 @@ class Buyer_model extends CI_Model{
 		$this->db->insert('shopping_carts',$data);
 
 	}
+
+
 	/**
 	*购物车中课程列表
 	*/
@@ -64,6 +67,8 @@ class Buyer_model extends CI_Model{
 
 		return $ret;
 	}
+
+
 	/**
 	*购物车中点击课程进入课程详情
 	*/
@@ -234,6 +239,73 @@ class Buyer_model extends CI_Model{
 				$ret[$key]['u_nickname']=$res[0]['u_nickname'];
 			}
 		}
+		return $ret;
+	}
+
+
+	/*
+	 * 获取课程详情
+	 */
+	public function get_cdetail($form)
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$where = array('courses_1.c_id' => $form['c_id']);
+		$data = array('c_name', 'c_major', 'c_detail', 'c_imgpath', 'c_releaseid','c_time', 
+		 			  'c_place', 'c_price', 'c_len', 'c_star', 'c_love', 'c_purchase', 'c_state');
+		$que = $this->db->select($data)
+						->join('courses_2','courses_1.c_id=courses_2.c_id')
+						->get_where('courses_1',$where)
+						->result_array();
+		if ( empty($que) )
+		{
+			throw new Exception("invalid c_id", 406);
+		}
+		$ret['c_info'] = $que[0];
+		$ret['tags'] = $this->db->select('tag_text, tag_id')
+								->where(array('c_id' => $form['c_id']))
+								->get('tags')
+								->result_array();
+		return $ret;
+	}
+
+
+	/**
+	 * 全部课程列表
+	 **/
+	public function get_allcou($form)
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('courses_1.c_id', 'c_name', 'c_star','c_time', 
+		 			  'c_place', 'c_price', 'c_imgpath');
+		$ret = $this->db->select($data)
+						->join('courses_2','courses_1.c_id=courses_2.c_id')
+						->get_where('courses_1')
+						->result_array();
+		
+		if (empty($ret))
+		{
+			throw new Exception("暂无课程", 406);
+		}
+		foreach ($ret as $key => $value) {
+			$ret[$key]['tags'] = $this->db->select('tag_text, tag_id')
+										  ->where(array('c_id' => $value['c_id']))
+										  ->get('tags')
+										  ->result_array();
+		}
+
+		//return
 		return $ret;
 	}
 }
