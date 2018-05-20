@@ -18,6 +18,43 @@ class Seller extends CI_Controller {
 	 *****************************************************************************************************/
 
 
+	/*
+	 * 发布课程中上传头像
+	 */
+	public function upload_init($name)
+	{
+		if ($_SERVER['REQUEST_METHOD'] == "OPTIONS")
+		{
+			return;
+		}
+
+		//upload config
+		$config['upload_path'] = './uploads/class_img/';
+		$config['allowed_types'] = 'jpg|png';
+		$config['file_name'] = $name;
+		$config['overwrite'] = TRUE;
+		$config['max_size'] = 10000;
+		$config['max_width'] = 1980;
+		$config['max_height'] = 1024;
+
+		//upload
+		$this->load->library('upload', $config);
+
+		if ( ! $this->upload->do_upload('userfile'))
+        {
+           	throw new Exception($this->upload->display_errors());
+	    }
+    	else
+        {
+       		$data = array('upload_data' => $this->upload->data());
+           	$c_imgpath = base_url() . 'uploads/class_img/' . $data['upload_data']['file_name'];
+        }
+		
+		//return
+		return $c_imgpath;
+	}
+
+
 	/*****************************************************************************************************
 	 * 主接口
 	 *****************************************************************************************************/
@@ -49,7 +86,7 @@ class Seller extends CI_Controller {
 				);
 			}
 			$post['token'] = get_token();
-			$post['c_imgpath'] = $this->upload();
+			$post['c_imgpath'] = $this->upload_init($post['token']);
 
 			//check form
 			$this->load->library('form_validation');
