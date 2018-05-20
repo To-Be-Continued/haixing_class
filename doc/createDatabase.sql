@@ -76,7 +76,7 @@ create table if not exists `courses_1`
     `c_major`			varchar(20),
     `c_intro`			varchar(20),
     `c_detail`			varchar(100),
-    `c_imgpath`			varchar(100),
+    `c_imgpath`			varchar(500),
     `c_releaseid`		bigint,
     foreign key(c_releaseid)references users_1(u_id) on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -84,7 +84,7 @@ create table if not exists `courses_1`
 create table if not exists `courses_2`
 (
 	`c_id`				bigint primary key not null,
-    `c_time` 			timestamp,
+    `c_time` 			varchar(100),
     `c_place` 			varchar(50),
     `c_price` 			int default '0',
     `c_len`				int default '0',
