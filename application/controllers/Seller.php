@@ -87,7 +87,7 @@ class Seller extends CI_Controller {
 			}
 			$post['token'] = get_token();
 			$name = 'class'.$post['c_name'].$post['c_major'].$post['c_detail'];
-			$post['c_imgpath'] = $this->upload_init($name);
+			//$post['c_imgpath'] = $this->upload_init($name);
 
 			//check form
 			$this->load->library('form_validation');
