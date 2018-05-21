@@ -213,7 +213,7 @@ class Buyer_model extends CI_Model{
 		}
 
 		$data = array('order_id', 'order_time', 'order_money', 'order_state', 
-				 	  'orders.c_id', 'c_num', 'c_imgpath','c_price');
+				 	  'orders.c_id', 'c_name', 'c_num', 'c_imgpath','c_price');
 		$where = array('u_id' => $u_id);
 		$ret = $this->db->select($data)
 						->join('courses_1','orders.c_id=courses_1.c_id')
