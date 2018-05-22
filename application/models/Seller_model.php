@@ -193,6 +193,7 @@ class Seller_model extends CI_Model
 		return $data;
 	}
 
+
 	/**
 	*卖家端点击进入课程详情
 	*/
@@ -228,6 +229,7 @@ class Seller_model extends CI_Model
 
 		return $ret;
 	}
+
 
 	/**
 	*卖家界面-删除课程  已购买状态下不能删除
@@ -273,6 +275,7 @@ class Seller_model extends CI_Model
 		}
 	}
 
+
 	/**
 	*卖家确认授课
 	*/
@@ -315,6 +318,77 @@ class Seller_model extends CI_Model
 			$this->db->set($data)
 					->where($where)
 					->update('orders');
+		}
+	}
+
+
+	/*
+	 * edit courses
+	 */
+	public function cou_edit($form)
+	{
+		//config
+		$members = array('c_major', 'c_detail');
+		$members_info = array('c_price', 'c_time', 'c_place', 'c_state');
+
+		//check token && get u_id
+		if (isset($form['token'])) 
+		{
+			$this->load->model('User_model', 'my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if(!isset($form['tags']))
+		{
+			throw new Exception("标签字段不能为空", 1);
+			
+		}
+
+		//object translate into json array
+		$arr = json_decode(json_encode($form['tags']),true);
+		
+		if(empty($arr))
+		{
+			throw new Exception("至少含有一个标签");
+			
+		}
+
+		//check if exist
+		$where = array('c_id' => $form['c_id']);
+		if ( ! $ret =  $this->db->select()
+							  	->where($where)
+					  			->get('courses_1')
+					  			->result_array())
+		{
+			throw new Exception('该课程不存在', 406);
+		}
+
+		if ( $ret[0]['c_releaseid'] != $u_id)
+		{
+			throw new Exception('无权限更改');
+		}
+
+		$state = $this->db->select('c_state')
+						  ->where($where)
+						  ->get('courses_2')
+						  ->result_array()[0]['c_state'];
+		
+		if ($state > 1)
+		{
+			throw new Exception("课程无法修改", 406);
+		}
+		//do update
+		$form['c_state'] = 0;
+		$this->db->update('courses_1', filter($form, $members), $where);
+		$this->db->update('courses_2', filter($form, $members_info), $where);
+
+		$this->db->delete('tags', $where);
+		foreach ($arr as $key => $value) {
+			$where = array(
+				'tag_text' => $value,
+				'c_id'     => $form['c_id']
+			);
+			$this->db->insert('tags',$where);			
 		}
 	}
 }
