@@ -393,5 +393,56 @@ class Buyer extends CI_Controller{
 		//return
 		output_data('400', '获取成功', $data);
 	}
+
+	/**
+	*卖家付款
+	*/
+	public function cou_buy()
+	{
+		//config
+		$members = array('token','order_id');
+
+		try
+		{
+			//get post
+			$post = get_post();
+			if(empty($post))
+			{
+				$post = array(
+					'order_id' => $this->input->post('order_id')
+				);
+			}
+			//get token
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if( ! $this->form_validation->run('cou_buy'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if(form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && buy
+			$this->load->model('Buyer_model','my_buy');
+			$this->my_buy->cou_buy(filter($post,$members));
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return 
+		output_data(400,"成功付款",array());
+	}
 }
 ?>

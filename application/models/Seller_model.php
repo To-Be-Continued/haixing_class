@@ -228,6 +228,95 @@ class Seller_model extends CI_Model
 
 		return $ret;
 	}
+
+	/**
+	*卖家界面-删除课程  已购买状态下不能删除
+	*/
+	public function cou_del($form)
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//确认 存在课程
+		$where = array('c_id' => $form['c_id']);
+		$ret = $this->db->select('c_id,c_state')
+				->where($where)
+				->get('courses_2')
+				->result_array();
+
+		if(empty($ret))
+		{
+			throw new Exception("课程不存在", 406);
+		}
+		
+		switch ($ret[0]['c_state'])
+		{
+			case 2:
+				throw new Exception("已购买，无法删除", 406);
+				break;
+			case 5:
+				throw new Exception("课程已删除", 406);
+				break;
+			default:
+				//do update
+				$data = array(
+					'c_state' => 5
+				);
+				$this->db->set($data)
+				->where($where)
+				->update('courses_2');
+				break;
+		}
+	}
+
+	/**
+	*卖家确认授课
+	*/
+	public function cou_accept($form)
+	{
+		// check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//确认订单存在 && get c_id、c_state
+		$where = array('order_id' => $form['order_id']);
+		$ret = $this->db->select('order_state,c_id')
+				->where($where)
+				->get('orders')
+				->row_array();
+		
+		if(empty($ret))
+		{
+			throw new Exception("订单不存在", 406);	
+		}
+
+		$w = array('c_id' => $ret['c_id']);
+
+		$r = $this->db->select('c_state')
+					->where($w)
+					->get('courses_2')
+					->row_array();
+		if(empty($ret))
+		{
+			throw new Exception("课程不存在", 406);	
+		}
+
+		//do update
+		$data = array('order_state' => 2);
+		if( $r['c_state'] == 2 && $ret['order_state'] == 1)
+		{
+			$this->db->set($data)
+					->where($where)
+					->update('orders');
+		}
+	}
 }
 
 ?>

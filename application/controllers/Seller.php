@@ -304,7 +304,110 @@ class Seller extends CI_Controller {
 		//return 
 		output_data(400,'获取成功',$ret);
 	}
-	
+
+	/**
+	*卖家界面-删除课程  已购买状态下不能删除
+	*/
+	public function cou_del()
+	{
+		//config
+		$members = array('token','c_id');
+
+		try
+		{
+			//getpost
+			$post = get_post();
+			if(empty($post))
+			{
+				$post = array(
+					'c_id' => $this->input->post('c_id')
+				);
+			}
+
+			//get token
+			$post['token'] = get_token();
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if ( ! $this->form_validation->run('cou_del')) 
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return; 
+			}
+
+			//filter && del
+			$this->load->model('Seller_model','my_sell');
+			$this->my_sell->cou_del(filter($post,$members));
+			
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return 
+		output_data(400,"删除成功",array());
+	}
+
+	/**
+	*卖家确认授课
+	*/
+	public function cou_accept()
+	{
+		//config
+		$members = array('token','order_id');
+
+		try
+		{
+			//get post
+			$post = get_post();
+			if(empty($post))
+			{
+				$post = array(
+					'order_id' => $this->input->post('order_id')
+				);
+			}
+		//get token
+		$post['token'] = get_token();
+
+		//check form
+		$this->load->library('form_validation');
+		$this->form_validation->set_data($post);
+		if( ! $this->form_validation->run('cou_accept'))
+		{
+			$this->load->helper('form');
+			foreach ($members as $member) 
+			{
+				if(form_error($member))
+				{
+					throw new Exception(strip_tags(form_error($member)));
+					
+				}
+			}
+			return;
+		}
+
+		//filter $$ accept
+		$this->load->model('Seller_model','my_sell');
+		$this->my_sell->cou_accept(filter($post,$members));
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+		
+		//return 
+		output_data(400,"卖家确认授课",array());
+	}
 }
 
 ?>

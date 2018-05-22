@@ -141,6 +141,27 @@ $config = array(
 			'label' => '课程ID',
 			'rules' => 'required'
 		)
+	),
+	'cou_del' => array(
+		array(
+			'field' => 'c_id',
+			'label' => '课程ID',
+			'rules' => 'required'
+		)
+	),
+	'cou_accept' => array(
+		array(
+			'field' => 'order_id',
+			'label' => '订单ID',
+			'rules' => 'required'
+		)
+	),
+	'cou_buy' => array(
+		array(
+			'field' => 'order_id',
+			'label' => '订单ID',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

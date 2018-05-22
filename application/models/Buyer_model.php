@@ -308,6 +308,51 @@ class Buyer_model extends CI_Model{
 		//return
 		return $ret;
 	}
+
+	/**
+	*卖家付款
+	*/
+	public function cou_buy($form)
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$where = array('order_id' => $form['order_id']);
+		//确认订单存在
+		$ret = $this->db->select('order_state,c_id')
+				->where($where)
+				->get('orders')
+				->row_array();
+		
+		if(empty($ret))
+		{
+			throw new Exception("订单不存在", 406);	
+		}
+
+		$w = array('c_id' => $ret['c_id']);
+
+		$r = $this->db->select('c_state')
+					->where($w)
+					->get('courses_2')
+					->row_array();
+		if(empty($ret))
+		{
+			throw new Exception("课程不存在", 406);	
+		}
+
+		//do update
+		$data = array('order_state' => 1);
+		if( $r['c_state'] == 2 && $ret['order_state'] == 0)
+		{
+			$this->db->set($data)
+					->where($where)
+					->update('orders');
+		}
+	}
 }
 
 ?>
