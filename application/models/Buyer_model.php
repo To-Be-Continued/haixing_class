@@ -395,6 +395,47 @@ class Buyer_model extends CI_Model{
 			throw new Exception("无法取消", 406);	
 		}
 	}
+
+
+	/*
+	 * 删除订单
+	 */
+	public function cou_delorder($form)
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//check order_id
+		if ( ! $ret = $this->db->select('order_state, c_id')
+							   ->where(array('order_id' => $form['order_id']))
+							   ->get('orders')
+							   ->result_array())
+		{
+			throw new Exception("invalid order_id", 406);
+		}
+
+		$state = $this->db->select('c_state')
+						  ->where(array('c_id' => $ret[0]['c_id']))
+						  ->get('courses_2')
+						  ->result_array()[0]['c_state'];
+		
+		if ($state == 2 && $ret[0]['order_state'] == 0)
+		{
+			$order_state = array('order_state' => 8);
+			$c_state = array('c_state' => 1);
+			$where = array('order_id' => $form['order_id']);
+			$this->db->update('orders', $order_state, $where);
+			$this->db->update('courses_2', $c_state, array('c_id' => $ret[0]['c_id']));
+		}
+		else
+		{
+			throw new Exception("无法删除", 406);	
+		}
+	}
 }
 
 ?>
