@@ -444,5 +444,103 @@ class Buyer extends CI_Controller{
 		//return 
 		output_data(400,"成功付款",array());
 	}
+
+
+	/*
+	 * 未付款取消订单
+	 */
+	public function cou_cancelorder()
+	{
+		//config
+		$members = array('token', 'order_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['order_id'] = $this->input->post('order_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('order_id', '订单ID', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && cancel order
+			$this->load->model('Buyer_model', 'my_buy');
+			$this->my_buy->cou_cancelorder(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '取消成功', array());
+	}
+
+
+	/*
+	 * 删除订单
+	 */
+	public function cou_delorder()
+	{
+		//config
+		$members = array('token', 'order_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['order_id'] = $this->input->post('order_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('order_id', '订单ID', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && delete order
+			$this->load->model('Buyer_model', 'my_buy');
+			$this->my_buy->cou_delorder(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '删除成功', array());
+	}
 }
 ?>

@@ -255,6 +255,7 @@ class Seller extends CI_Controller {
 		output_data(400, '上传成功', $ret);
 	}
 
+
 	/**
 	*卖家版-点击课程进入课程详情
 	*/
@@ -304,6 +305,7 @@ class Seller extends CI_Controller {
 		//return 
 		output_data(400,'获取成功',$ret);
 	}
+
 
 	/**
 	*卖家界面-删除课程  已购买状态下不能删除
@@ -357,6 +359,7 @@ class Seller extends CI_Controller {
 		output_data(400,"删除成功",array());
 	}
 
+
 	/**
 	*卖家确认授课
 	*/
@@ -407,6 +410,163 @@ class Seller extends CI_Controller {
 		
 		//return 
 		output_data(400,"卖家确认授课",array());
+	}
+
+
+	/*
+	 * edit courses
+	 */
+	public function cou_edit()
+	{
+		//config
+		$members = array('token', 'c_id', 'c_major', 'c_detail', 
+						 'c_price', 'c_time', 'c_place','tags');
+
+		try
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post = array(
+					'c_id'     => $this->input->post('c_id')  ,
+				    'c_major'  => $this->input->post('c_major') ,
+				    'c_detail' => $this->input->post('c_detail'),
+				    'c_price'  => $this->input->post('c_price') ,
+				    'c_time'   => $this->input->post('c_time')  ,
+				    'c_place'  => $this->input->post('c_place'),
+				    'tags'     => $this->input->post('tags')
+				);
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if ( ! $this->form_validation->run('cou_edit')) 
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return; 
+			}
+
+			//filter && edit
+			$this->load->model('Seller_model', 'my_sell');
+			$this->my_sell->cou_edit(filter($post, $members));
+
+		}
+		catch (Exception $e)
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;
+		}
+ 
+		//return
+		output_data(400, '修改成功', array());
+	}
+
+
+	/*
+	 * 卖家拒接授课或者买家拒接
+	 */
+	public function cou_deny()
+	{
+		//config
+		$members = array('token', 'order_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['order_id'] = $this->input->post('order_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('order_id', '订单ID', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && deny
+			$this->load->model('Seller_model', 'my_sell');
+			$this->my_sell->cou_deny(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '已拒绝', array());
+	}
+
+
+	/*
+	 * 双方完成交易-未评价
+	 */
+	public function cou_unevaluate()
+	{
+		//config
+		$members = array('token', 'order_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['order_id'] = $this->input->post('order_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('order_id', '订单ID', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && set cou_unevaluate
+			$this->load->model('Seller_model', 'my_sell');
+			$this->my_sell->cou_unevaluate(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '交易成功', array());
 	}
 }
 
