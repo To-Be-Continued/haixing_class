@@ -455,7 +455,7 @@ class Seller extends CI_Controller {
 				}
 				return; 
 			}
-			
+
 			//filter && edit
 			$this->load->model('Seller_model', 'my_sell');
 			$this->my_sell->cou_edit(filter($post, $members));
@@ -469,6 +469,55 @@ class Seller extends CI_Controller {
  
 		//return
 		output_data(400, '修改成功', array());
+	}
+
+
+	/*
+	 * 卖家拒接授课或者买家拒接
+	 */
+	public function cou_deny()
+	{
+		//config
+		$members = array('token', 'order_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['order_id'] = $this->input->post('order_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('order_id', '订单ID', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && deny
+			$this->load->model('Seller_model', 'my_sell');
+			$this->my_sell->cou_deny(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '已拒绝', array());
 	}
 }
 

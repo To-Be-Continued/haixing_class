@@ -391,6 +391,45 @@ class Seller_model extends CI_Model
 			$this->db->insert('tags',$where);			
 		}
 	}
+
+
+	/*
+	 * 卖家拒接授课或者买家拒接
+	 */
+	public function cou_deny($form)
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//check order_id
+		if ( ! $ret = $this->db->select('order_state, c_id')
+							   ->where(array('order_id' => $form['order_id']))
+							   ->get('orders')
+							   ->result_array())
+		{
+			throw new Exception("invalid order_id", 406);
+		}
+
+		$state = $this->db->select('c_state')
+						  ->where(array('c_id' => $ret[0]['c_id']))
+						  ->get('courses_2')
+						  ->result_array()[0]['c_state'];
+		
+		if ($state == 2 && $ret[0]['order_state'] == 1)
+		{
+			$data = array('order_state' => 5);
+			$where = array('order_id' => $form['order_id']);
+			$this->db->update('orders', $data, $where);
+		}
+		else
+		{
+			throw new Exception("invalid order_state or c_state", 406);	
+		}
+	}
 }
 
 ?>
