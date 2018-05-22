@@ -519,6 +519,55 @@ class Seller extends CI_Controller {
 		//return
 		output_data(400, '已拒绝', array());
 	}
+
+
+	/*
+	 * 双方完成交易-未评价
+	 */
+	public function cou_unevaluate()
+	{
+		//config
+		$members = array('token', 'order_id');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['order_id'] = $this->input->post('order_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('order_id', '订单ID', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && set cou_unevaluate
+			$this->load->model('Seller_model', 'my_sell');
+			$this->my_sell->cou_unevaluate(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '交易成功', array());
+	}
 }
 
 ?>
