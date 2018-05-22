@@ -44,8 +44,9 @@ class User_model extends CI_Model {
 	private function getopenid($code)
 	{
 		$appid = 'wx196440f4d0464441';
-		//$secret = 'fa5299e32a1bae1024d37ae69903553c';
 		$secret = '9fe0991c34a49ac73d4a73ba1d7d4b40';
+		//$appid = 'wxc84bc967d806aa31';
+		//$secret = 'fa5299e32a1bae1024d37ae69903553c';
 		$json = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
 		header("Content-Type: application/json");
 		$js =  file_get_contents($json);
