@@ -423,7 +423,7 @@ class Buyer_model extends CI_Model{
 						  ->get('courses_2')
 						  ->result_array()[0]['c_state'];
 		
-		if ($state == 2 && $ret[0]['order_state'] == 0)
+		if ($state == 1 && $ret[0]['order_state'] == 7)
 		{
 			$order_state = array('order_state' => 8);
 			$c_state = array('c_state' => 1);
