@@ -685,6 +685,39 @@ class Buyer_model extends CI_Model{
 
 		return $ret;
 	}
+
+
+	/* 
+	 * 获取关注卖家列表
+	 */
+	public function get_fansellerlist($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if (!$ret = $this->db->select('fan_to')
+							 ->where(array('fan_from' => $u_id))
+							 ->get('fans')
+							 ->result_array())
+		{
+			throw new Exception("no attention seller", 406);
+		}
+
+		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+		foreach ($ret as $key => $value) {
+			$ans[$key] = $this->db->select($data)
+								->join('users_2','users_2.u_id=users_1.u_id')
+								->join('users_3','users_3.u_id=users_1.u_id')
+								->get_where('users_1', array('users_1.u_id' => $value['fan_to']))
+								->result_array()[0];
+		}
+		return $ans;
+	}
 }
 
 ?>
