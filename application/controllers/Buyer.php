@@ -542,5 +542,61 @@ class Buyer extends CI_Controller{
 		//return
 		output_data(400, '删除成功', array());
 	}
+
+
+	/*
+	 * 发布课程评论
+	 */
+	public function comment()
+	{
+		//config
+		$members = array('token', 'c_id', 'order_id', 'com_text', 'com_star');
+
+		try
+		{
+			//get post
+			$post = get_post();
+			if(empty($post))
+			{
+				$post = array(
+					'c_id' => $this->input->post('c_id'),
+					'order_id' => $this->input->post('order_id'),
+					'com_text' => $this->input->post('com_text'),
+					'com_star' => $this->input->post('com_star')
+				);
+			}
+			//get token
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if( ! $this->form_validation->run('comment'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if(form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && comment
+			$this->load->model('Buyer_model','my_buy');
+			$this->my_buy->comment(filter($post,$members));
+
+		}
+		catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return
+		output_data(400, '评价成功', array());
+	}
 }
 ?>

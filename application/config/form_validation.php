@@ -216,6 +216,28 @@ $config = array(
 			'label' => '专业选项',
 			'rules' => 'required'
 		)
+	),
+	'comment' => array(
+		array(
+			'field' => 'c_id',
+			'label' => '课程ID',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'order_id',
+			'label' => '订单ID',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'com_text',
+			'label' => '评价内容',
+			'rules' => 'required|max_length[50]'
+		),
+		array(
+			'field' => 'com_star',
+			'label' => '评价星级',
+			'rules' => 'required'
+		),
 	)
 );
 ?>

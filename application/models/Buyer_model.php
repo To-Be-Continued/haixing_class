@@ -436,6 +436,44 @@ class Buyer_model extends CI_Model{
 			throw new Exception("无法删除", 406);	
 		}
 	}
+
+
+	/*
+	 * 发布课程评论
+	 */
+	public function comment($form)
+	{
+		$members = array('u_id', 'c_id', 'com_text', 'com_star');
+
+		//check token $$ get u_id
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		//check if buyer
+		$where = array(
+			'c_id' => $form['c_id'],
+			'order_id' => $form['order_id'],
+			'u_id' => $u_id
+		);
+		if ( ! $ret = $this->db->select('order_state')
+							   ->where($where)
+							   ->get('orders')
+							   ->result_array())
+		{
+			throw new Exception("invalid user", 406);
+		}
+		if ($ret[0]['order_state'] != 3)
+		{
+			throw new Exception("invalid order_state", 406);
+		}
+		$form['u_id'] = $u_id;
+		$this->db->insert('ecomments', filter($form, $members));
+		$data = array('order_state'=> 4);
+		$this->db->update('orders', $data, $where);
+	}
 }
 
 ?>
