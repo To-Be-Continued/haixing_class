@@ -472,6 +472,46 @@ class Seller_model extends CI_Model
 		}
 
 	}
+
+
+	/*
+	 * 获取卖家详情
+	 */
+	public function get_detail($form)
+	{
+		//check token
+		if (isset($form['token'])) 
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$where = array('u_tel' => $form['u_tel']);
+		//check if seller
+		if ( ! $que = $this->db->select('u_isseller')
+							   ->where($where)
+							   ->get('users_1')
+							   ->result_array())
+		{
+			throw new Exception("invalid u_tel", 406);
+		}
+		if (! $que[0]['u_isseller'])
+		{
+			throw new Exception("invalid seller_tel", 406);
+		}
+		$data = array('u_email', 'u_qq', 'u_nickname', 'u_intro', 'u_sex', 'u_birth','u_sch',
+					  'u_name', 'u_major', 'u_level', 'u_point', 'u_credit', 'u_imgpath', 
+					  'u_coucsr', 'u_cousales', 'u_coulen', 'u_cousum', 'u_fans');
+		if ( ! $ret = $this->db->select($data)
+							   ->join('users_2','users_2.u_id=users_1.u_id')
+							   ->join('users_3','users_3.u_id=users_1.u_id')
+							   ->get_where('users_1', $where)
+							   ->result_array())
+		{
+			throw new Exception("invalid u_tel", 406);
+		}
+		return $ret[0];
+	}
 }
 
 ?>
