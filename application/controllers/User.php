@@ -334,6 +334,53 @@ class User extends CI_Controller {
 
 		output_data(400, '获取成功', $data);
 	}
+
+
+	/*
+	 * 获取用户信息
+	 */
+	public function get_info()
+	{
+		//config
+		$members = array('token', 'u_tel');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['u_tel'] = $this->input->post('u_tel');
+			}
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('u_tel', '手机号', 'required');
+			if ( ! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & get_info
+			$this->load->model('User_model', 'my_user');
+			$data = $this->my_user->get_info(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '获取成功', $data);
+	}
+
 } 
 
 ?>

@@ -321,5 +321,31 @@ class User_model extends CI_Model {
 		else
 			return json_decode($data, true);
 	}
+
+
+	/*
+	 * 获取用户信息
+	 */
+	public function get_info($form)
+	{
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$this->check_token($form['token']);
+		}
+
+		//get infomation
+		$data = array('u_nickname', 'u_sex', 'u_birth', 'u_isseller', 'u_isiden', 'u_email',
+					  'u_qq', 'u_intro', 'u_imgpath', 'u_sch', 'u_major', 'u_name');
+		if (! $ret = $this->db->select($data)
+						->join('users_2', 'users_1.u_id=users_2.u_id')
+						->get_where('users_1', array('u_tel' => $form['u_tel']))
+						->result_array())
+		{
+			throw new Exception("invalid u_tel", 406);
+		}
+		return $ret[0];
+	}
+
 }
 ?>
