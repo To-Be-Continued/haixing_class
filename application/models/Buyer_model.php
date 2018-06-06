@@ -571,6 +571,45 @@ class Buyer_model extends CI_Model{
 		$this->db->insert('fans', $que);
 	}
 
+
+	/*
+	 * 关注专业
+	 */
+	public function fanmajor($form)
+	{
+		//check token & get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		//check if follow
+		$wheres = array(
+			'sys_mid' => $form['sys_mid'],
+			'u_id' => $u_id
+		);
+		if ($this->db->select()
+					 ->where($wheres)
+					 ->get('major_follows')
+					 ->result_array())
+		{
+			throw new Exception("repeat attention", 406);
+		}
+
+		$where = array('sys_mid' => $form['sys_mid']);
+		if (! $follow = $this->db->select('sys_mfollows')
+						 	 	 ->where($where)
+					 			 ->get('sys_major')
+					 			 ->result_array())
+		{
+			throw new Exception("invalid sys_mid", 406);
+		}
+		$data = array('sys_mfollows' => $follow[0]['sys_mfollows']+1);
+		$this->db->update('sys_major', $data, $where);
+		$this->db->insert('major_follows', $wheres);
+	}
+
 }
 
 ?>

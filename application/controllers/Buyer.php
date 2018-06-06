@@ -683,9 +683,58 @@ class Buyer extends CI_Controller{
 				return;
 			}
 
-			//filter && get comment list
+			//filter && get fan
 			$this->load->model('Buyer_model', 'my_buy');
 			$this->my_buy->fan(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '关注成功', array());
+	}
+
+
+	/*
+	 * 关注专业
+	 */
+	public function fanmajor()
+	{
+		//config
+		$members = array('token', 'sys_mid');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['sys_mid'] = $this->input->post('sys_mid');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('sys_mid', '专业ID', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && fan
+			$this->load->model('Buyer_model', 'my_buy');
+			$this->my_buy->fanmajor(filter($post, $members));
 		}
 		catch (Exception $e) 
 		{
