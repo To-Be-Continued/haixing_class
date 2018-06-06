@@ -660,6 +660,31 @@ class Buyer_model extends CI_Model{
 		return $ans;
 	}
 
+
+	/*
+	 * 获取卖家列表
+	 */
+	public function get_sellerlist()
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+
+		$where=array('u_isseller='=>1);
+		$ret = $this->db->select($data)
+						->join('users_2','users_2.u_id=users_1.u_id')
+						->join('users_3','users_3.u_id=users_1.u_id')
+						->get_where('users_1', $where)
+						->result_array();
+
+		return $ret;
+	}
 }
 
 ?>
