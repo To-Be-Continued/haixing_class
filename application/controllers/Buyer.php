@@ -745,5 +745,33 @@ class Buyer extends CI_Controller{
 		//return
 		output_data(400, '关注成功', array());
 	}
+
+
+	/*
+	 * 获取专业列表
+	 */
+	public function get_majorlist()
+	{
+		//config
+		$members = array('token');
+
+		try 
+		{
+			//get token
+			$post['token'] = get_token();
+
+			//filter && list
+			$this->load->model('Buyer_model', 'my_buy');
+			$data = $this->my_buy->get_majorlist(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '获取成功', $data);
+	}
 }
 ?>

@@ -610,6 +610,27 @@ class Buyer_model extends CI_Model{
 		$this->db->insert('major_follows', $wheres);
 	}
 
+
+	/*
+	 * 获取专业列表
+	 */
+	public function get_majorlist($form)
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//get list
+		$ret = $this->db->select()
+						->get('sys_major')
+						->result_array();
+
+		return $ret;
+	}
+
 }
 
 ?>
