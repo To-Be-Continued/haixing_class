@@ -203,7 +203,7 @@ $config = array(
 		),
 		array(
 			'field' => 'f_sch',
-			'label' => '搜索选项',
+			'label' => '学校选项',
 			'rules' => 'required'
 		),
 		array(
@@ -236,6 +236,48 @@ $config = array(
 		array(
 			'field' => 'com_star',
 			'label' => '评价星级',
+			'rules' => 'required'
+		),
+	),
+	'user_info' => array(
+		array(
+			'field' => 'u_nickname',
+			'label' => '昵称',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_intro',
+			'label' => '介绍',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_email',
+			'label' => '邮箱',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_qq',
+			'label' => 'QQ',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_sex',
+			'label' => '性别',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_birth',
+			'label' => '生日',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_sch',
+			'label' => '学校',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'u_major',
+			'label' => '专业',
 			'rules' => 'required'
 		),
 	)

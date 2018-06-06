@@ -388,5 +388,28 @@ class User_model extends CI_Model {
 		return $ret[0];
 	}
 
+
+	/*
+	 * 修改用户信息
+	 */
+	public function update_info($form)
+	{
+		//config
+		$members_1 = array('u_email', 'u_qq', 'u_name', 'u_sex', 'u_birth', 'u_sch', 'u_major');
+		$members_2 = array('u_nickname', 'u_intro');
+
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+
+		$where = array('u_id' => $id);
+
+		//do update
+		$this->db->update('users_1', filter($form, $members_1), $where);
+		$this->db->update('users_2', filter($form, $members_2), $where);
+	}
+
 }
 ?>
