@@ -512,6 +512,7 @@ class Seller_model extends CI_Model
 		}
 		return $ret[0];
 	}
+
 }
 
 ?>

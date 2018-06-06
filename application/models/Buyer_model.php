@@ -523,6 +523,54 @@ class Buyer_model extends CI_Model{
 		return $ret;
 	}
 
+
+	/*
+	 * 关注卖家
+	 */
+	public function fan($form)
+	{
+		//check token & get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if ( ! $ret = $this->db->select('u_id, u_isseller')
+							   ->where(array('u_tel' => $form['u_tel']))
+							   ->get('users_1')
+							   ->result_array())
+		{
+			throw new Exception("invalid seller_tel", 406);
+		}
+		$ret=$ret[0];
+		if (!$ret['u_isseller'])
+		{
+			throw new Exception("invalid seller_tel", 406);
+		}
+
+		//update
+		$que=array(
+			'fan_from' => $u_id,
+			'fan_to' =>$ret['u_id']
+		);
+		if ( $this->db->select()
+					  ->where($que)
+					  ->get('fans')
+					  ->result_array())
+		{
+			throw new Exception("repeat attention", 406);
+		}
+		$where = array('u_id' => $ret['u_id']);
+		$fans = $this->db->select('u_fans')
+						 ->where($where)
+						 ->get('users_3')
+						 ->result_array()[0]['u_fans'];
+		$data = array('u_fans' => $fans+1);
+		$this->db->update('users_3', $data, $where);
+		$this->db->insert('fans', $que);
+	}
+
 }
 
 ?>
