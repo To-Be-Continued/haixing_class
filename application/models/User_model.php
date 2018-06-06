@@ -411,5 +411,30 @@ class User_model extends CI_Model {
 		$this->db->update('users_2', filter($form, $members_2), $where);
 	}
 
+
+	/*
+	 * 设置昵称
+	 */
+	public function set_nickname($form)
+	{
+		$members = array('u_nickname');
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+
+		if ($this->db->select('u_nickname')
+					 ->where(array('u_nickname' => $form['u_nickname']))
+					 ->get('users_2')
+					 ->result_array())
+		{
+			throw new Exception("invalid nickname", 406);
+		}
+
+		$where = array('u_id' => $id);
+		$this->db->update('users_2', filter($form, $members), $where);
+	}	
+
 }
 ?>
