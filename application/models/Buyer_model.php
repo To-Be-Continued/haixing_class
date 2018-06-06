@@ -445,7 +445,7 @@ class Buyer_model extends CI_Model{
 	{
 		$members = array('u_id', 'c_id', 'com_text', 'com_star');
 
-		//check token $$ get u_id
+		//check token && get u_id
 		if(isset($form['token']))
 		{
 			$this->load->model('User_model','my_user');
@@ -474,6 +474,55 @@ class Buyer_model extends CI_Model{
 		$data = array('order_state'=> 4);
 		$this->db->update('orders', $data, $where);
 	}
+
+
+	/*
+	 * 获取课程评论列表
+	 */
+	public function get_list($form)
+	{
+		$members = array('com_id', 'com_text', 'com_like', 'com_star', 'com_nickname', 'com_tel', 'is_like');
+
+		//check token & get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if (! $ret = $this->db->select('com_id, com_text, com_like, com_star, u_id')
+							  ->where(array('c_id' => $form['c_id']))
+							  ->get('ecomments')
+							  ->result_array())
+		{
+			throw new Exception("invalid c_id", 406);
+		}
+
+		foreach ($ret as $key => $value) 
+		{
+			$ret[$key]['com_tel'] = $this->db->select('u_tel')
+											 ->where(array('u_id' => $value['u_id']))
+											 ->get('users_1')
+											 ->result_array()[0]['u_tel'];
+
+			$ret[$key]['com_nickname'] = null;
+			$ret[$key]['is_like'] = 0;
+			if ( $nick = $this->db->select('u_nickname')
+						 		  ->where(array('u_id' => $value['u_id']))
+						 		  ->get('users_2')
+						          ->result_array())
+			{
+				$ret[$key]['com_nickname'] = $nick[0]['u_nickname'];
+			}
+			if ($value['u_id'] == $u_id)
+			{
+				$ret[$key]['is_like'] = 1;
+			}
+			filter($ret[$key], $members);
+		}
+		return $ret;
+	}
+
 }
 
 ?>
