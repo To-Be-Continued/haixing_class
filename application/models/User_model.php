@@ -363,5 +363,30 @@ class User_model extends CI_Model {
 		$this->db->update('users_setting', filter($form, $members), $where);
 	}
 
+
+	/*
+	 * 获取用户设置
+	 */
+	public function get_setting($form)
+	{
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+
+		$data = array('f_age', 'f_sch', 'f_name', 'f_major');
+		$where = array('u_id' => $id);
+		if (! $ret = $this->db->select($data)
+							  ->where($where)
+							  ->get('users_setting')
+							  ->result_array())
+		{
+			throw new Exception("System Error", 406);
+		}
+
+		return $ret[0];
+	}
+
 }
 ?>

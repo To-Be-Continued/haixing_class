@@ -434,6 +434,31 @@ class User extends CI_Controller {
 		output_data(400, '设置成功', array());
 	}
 
+
+	/*
+	 * 获取用户设置
+	 */
+	public function get_setting()
+	{
+		//config
+		$members = array('token');
+
+		try 
+		{
+			$post['token']=get_token();
+
+			//filter & get_setting
+			$this->load->model('User_model', 'my_user');
+			$data = $this->my_user->get_setting(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '获取成功', $data);
+	}
 } 
 
 ?>
