@@ -352,6 +352,7 @@ class User extends CI_Controller {
 			{
 				$post['u_tel'] = $this->input->post('u_tel');
 			}
+			$post['token']=get_token();
 
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('u_tel', '手机号', 'required');
@@ -379,6 +380,58 @@ class User extends CI_Controller {
 		}
 
 		output_data(400, '获取成功', $data);
+	}
+
+
+	/*
+	 * 用户设置
+	 */
+	public function user_setting()
+	{
+		//config
+		$members = array('token', 'f_age', 'f_sch', 'f_name', 'f_major');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post = array(
+					'f_age' => $this->input->post('f_age'),
+					'f_sch' => $this->input->post('f_sch'),
+					'f_name' => $this->input->post('f_name'),
+					'f_major' => $this->input->post('f_major')
+				);
+			}
+			$post['token'] = get_token();
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if ( ! $this->form_validation->run('user_setting'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & set
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->user_setting(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '设置成功', array());
 	}
 
 } 

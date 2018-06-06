@@ -194,6 +194,28 @@ $config = array(
 			'label' => '课程地点',
 			'rules' => 'required|max_length[50]'
 		)
+	),
+	'user_setting' => array(
+		array(
+			'field' => 'f_age',
+			'label' => '年龄选项',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'f_sch',
+			'label' => '搜索选项',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'f_name',
+			'label' => '姓名选项',
+			'rules' => 'required'
+		),
+		array(
+			'field' => 'f_major',
+			'label' => '专业选项',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

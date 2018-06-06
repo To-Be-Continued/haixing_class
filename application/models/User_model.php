@@ -347,5 +347,21 @@ class User_model extends CI_Model {
 		return $ret[0];
 	}
 
+
+	/*
+	 * 用户设置
+	 */
+	public function user_setting($form)
+	{
+		$members = array('f_age', 'f_sch', 'f_name', 'f_major');
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+		$where = array('u_id' => $id);
+		$this->db->update('users_setting', filter($form, $members), $where);
+	}
+
 }
 ?>
