@@ -631,6 +631,35 @@ class Buyer_model extends CI_Model{
 		return $ret;
 	}
 
+
+	/*
+	 * 获取关注的专业列表
+	 */
+	public function get_fanmajorlist($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if (!$ret = $this->db->select('sys_mid')
+							 ->where(array('u_id' => $u_id))
+							 ->get('major_follows')
+							 ->result_array())
+		{
+			throw new Exception("no attention major", 406);
+		}
+		foreach ($ret as $key => $value) {
+			$ans[$key] = $this->db->select()
+								  ->where($value)
+								  ->get('sys_major')
+								  ->result_array()[0];
+		}
+		return $ans;
+	}
+
 }
 
 ?>
