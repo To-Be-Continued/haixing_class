@@ -436,6 +436,288 @@ class Buyer_model extends CI_Model{
 			throw new Exception("无法删除", 406);	
 		}
 	}
+
+
+	/*
+	 * 发布课程评论
+	 */
+	public function comment($form)
+	{
+		$members = array('u_id', 'c_id', 'com_text', 'com_star');
+
+		//check token && get u_id
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		//check if buyer
+		$where = array(
+			'c_id' => $form['c_id'],
+			'order_id' => $form['order_id'],
+			'u_id' => $u_id
+		);
+		if ( ! $ret = $this->db->select('order_state')
+							   ->where($where)
+							   ->get('orders')
+							   ->result_array())
+		{
+			throw new Exception("invalid user", 406);
+		}
+		if ($ret[0]['order_state'] != 3)
+		{
+			throw new Exception("invalid order_state", 406);
+		}
+		$form['u_id'] = $u_id;
+		$this->db->insert('ecomments', filter($form, $members));
+		$data = array('order_state'=> 4);
+		$this->db->update('orders', $data, $where);
+	}
+
+
+	/*
+	 * 获取课程评论列表
+	 */
+	public function get_list($form)
+	{
+		$members = array('com_id', 'com_text', 'com_like', 'com_star', 'com_nickname', 'com_tel', 'is_like');
+
+		//check token & get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if (! $ret = $this->db->select('com_id, com_text, com_like, com_star, u_id')
+							  ->where(array('c_id' => $form['c_id']))
+							  ->get('ecomments')
+							  ->result_array())
+		{
+			throw new Exception("invalid c_id", 406);
+		}
+
+		foreach ($ret as $key => $value) 
+		{
+			$ret[$key]['com_tel'] = $this->db->select('u_tel')
+											 ->where(array('u_id' => $value['u_id']))
+											 ->get('users_1')
+											 ->result_array()[0]['u_tel'];
+
+			$ret[$key]['com_nickname'] = null;
+			$ret[$key]['is_like'] = 0;
+			if ( $nick = $this->db->select('u_nickname')
+						 		  ->where(array('u_id' => $value['u_id']))
+						 		  ->get('users_2')
+						          ->result_array())
+			{
+				$ret[$key]['com_nickname'] = $nick[0]['u_nickname'];
+			}
+			if ($value['u_id'] == $u_id)
+			{
+				$ret[$key]['is_like'] = 1;
+			}
+			filter($ret[$key], $members);
+		}
+		return $ret;
+	}
+
+
+	/*
+	 * 关注卖家
+	 */
+	public function fan($form)
+	{
+		//check token & get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if ( ! $ret = $this->db->select('u_id, u_isseller')
+							   ->where(array('u_tel' => $form['u_tel']))
+							   ->get('users_1')
+							   ->result_array())
+		{
+			throw new Exception("invalid seller_tel", 406);
+		}
+		$ret=$ret[0];
+		if (!$ret['u_isseller'])
+		{
+			throw new Exception("invalid seller_tel", 406);
+		}
+
+		//update
+		$que=array(
+			'fan_from' => $u_id,
+			'fan_to' =>$ret['u_id']
+		);
+		if ( $this->db->select()
+					  ->where($que)
+					  ->get('fans')
+					  ->result_array())
+		{
+			throw new Exception("repeat attention", 406);
+		}
+		$where = array('u_id' => $ret['u_id']);
+		$fans = $this->db->select('u_fans')
+						 ->where($where)
+						 ->get('users_3')
+						 ->result_array()[0]['u_fans'];
+		$data = array('u_fans' => $fans+1);
+		$this->db->update('users_3', $data, $where);
+		$this->db->insert('fans', $que);
+	}
+
+
+	/*
+	 * 关注专业
+	 */
+	public function fanmajor($form)
+	{
+		//check token & get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		//check if follow
+		$wheres = array(
+			'sys_mid' => $form['sys_mid'],
+			'u_id' => $u_id
+		);
+		if ($this->db->select()
+					 ->where($wheres)
+					 ->get('major_follows')
+					 ->result_array())
+		{
+			throw new Exception("repeat attention", 406);
+		}
+
+		$where = array('sys_mid' => $form['sys_mid']);
+		if (! $follow = $this->db->select('sys_mfollows')
+						 	 	 ->where($where)
+					 			 ->get('sys_major')
+					 			 ->result_array())
+		{
+			throw new Exception("invalid sys_mid", 406);
+		}
+		$data = array('sys_mfollows' => $follow[0]['sys_mfollows']+1);
+		$this->db->update('sys_major', $data, $where);
+		$this->db->insert('major_follows', $wheres);
+	}
+
+
+	/*
+	 * 获取专业列表
+	 */
+	public function get_majorlist($form)
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		//get list
+		$ret = $this->db->select()
+						->get('sys_major')
+						->result_array();
+
+		return $ret;
+	}
+
+
+	/*
+	 * 获取关注的专业列表
+	 */
+	public function get_fanmajorlist($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if (!$ret = $this->db->select('sys_mid')
+							 ->where(array('u_id' => $u_id))
+							 ->get('major_follows')
+							 ->result_array())
+		{
+			throw new Exception("no attention major", 406);
+		}
+		foreach ($ret as $key => $value) {
+			$ans[$key] = $this->db->select()
+								  ->where($value)
+								  ->get('sys_major')
+								  ->result_array()[0];
+		}
+		return $ans;
+	}
+
+
+	/*
+	 * 获取卖家列表
+	 */
+	public function get_sellerlist()
+	{
+		//check token
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+
+		$where=array('u_isseller='=>1);
+		$ret = $this->db->select($data)
+						->join('users_2','users_2.u_id=users_1.u_id')
+						->join('users_3','users_3.u_id=users_1.u_id')
+						->get_where('users_1', $where)
+						->result_array();
+
+		return $ret;
+	}
+
+
+	/* 
+	 * 获取关注卖家列表
+	 */
+	public function get_fansellerlist($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		if (!$ret = $this->db->select('fan_to')
+							 ->where(array('fan_from' => $u_id))
+							 ->get('fans')
+							 ->result_array())
+		{
+			throw new Exception("no attention seller", 406);
+		}
+
+		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+		foreach ($ret as $key => $value) {
+			$ans[$key] = $this->db->select($data)
+								->join('users_2','users_2.u_id=users_1.u_id')
+								->join('users_3','users_3.u_id=users_1.u_id')
+								->get_where('users_1', array('users_1.u_id' => $value['fan_to']))
+								->result_array()[0];
+		}
+		return $ans;
+	}
 }
 
 ?>

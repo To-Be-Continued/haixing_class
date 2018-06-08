@@ -334,6 +334,237 @@ class User extends CI_Controller {
 
 		output_data(400, '获取成功', $data);
 	}
+
+
+	/*
+	 * 获取用户信息
+	 */
+	public function get_info()
+	{
+		//config
+		$members = array('token', 'u_tel');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['u_tel'] = $this->input->post('u_tel');
+			}
+			$post['token']=get_token();
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('u_tel', '手机号', 'required');
+			if ( ! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & get_info
+			$this->load->model('User_model', 'my_user');
+			$data = $this->my_user->get_info(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '获取成功', $data);
+	}
+
+
+	/*
+	 * 用户设置
+	 */
+	public function user_setting()
+	{
+		//config
+		$members = array('token', 'f_age', 'f_sch', 'f_name', 'f_major');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post = array(
+					'f_age' => $this->input->post('f_age'),
+					'f_sch' => $this->input->post('f_sch'),
+					'f_name' => $this->input->post('f_name'),
+					'f_major' => $this->input->post('f_major')
+				);
+			}
+			$post['token'] = get_token();
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if ( ! $this->form_validation->run('user_setting'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & set
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->user_setting(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '设置成功', array());
+	}
+
+
+	/*
+	 * 获取用户设置
+	 */
+	public function get_setting()
+	{
+		//config
+		$members = array('token');
+
+		try 
+		{
+			$post['token']=get_token();
+
+			//filter & get_setting
+			$this->load->model('User_model', 'my_user');
+			$data = $this->my_user->get_setting(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '获取成功', $data);
+	}
+
+
+	/*
+	 * 
+	 */
+	public function update_info()
+	{
+		//config
+		$members = array('token', 'u_nickname', 'u_intro', 'u_email', 'u_qq', 
+						 'u_name', 'u_sex', 'u_birth', 'u_sch', 'u_major');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post = array(
+					'u_nickname' => $this->input->post('u_nickname'),
+					'u_intro' => $this->input->post('u_intro'),
+					'u_email' => $this->input->post('u_email'),
+					'u_qq' => $this->input->post('u_qq'),
+					'u_name' => $this->input->post('u_name'),
+					'u_sex' => $this->input->post('u_sex'),
+					'u_birth' => $this->input->post('u_birth'),
+					'u_sch' => $this->input->post('u_sch'),
+					'u_major' => $this->input->post('u_major'),					
+				);
+			}
+			$post['token'] = get_token();
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if ( ! $this->form_validation->run('user_info'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & update
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->update_info(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		output_data(400, '修改成功', array());
+	}
+
+
+	/*
+	 * 设置昵称
+	 */
+	public function set_nickname()
+	{
+		//config
+		$members = array('token', 'u_nickname');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['u_nickname'] = $this->input->post('u_nickname');
+			}
+			$post['token']=get_token();
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('u_nickname', '昵称', 'required');
+			if ( ! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & get_info
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->set_nickname(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		//return
+		output_data(400, '修改成功', array());
+	}
 } 
 
 ?>

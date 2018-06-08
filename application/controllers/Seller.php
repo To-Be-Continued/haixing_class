@@ -568,6 +568,55 @@ class Seller extends CI_Controller {
 		//return
 		output_data(400, '交易成功', array());
 	}
+
+
+	/*
+	 * 获取卖家详情
+	 */
+	public function get_detail()
+	{
+		//config
+		$members = array('token', 'u_tel');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['u_tel'] = $this->input->post('u_tel');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('u_tel', '手机号', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && set cou_unevaluate
+			$this->load->model('Seller_model', 'my_sell');
+			$data = $this->my_sell->get_detail(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '获取成功', $data);
+	}
 }
 
 ?>
