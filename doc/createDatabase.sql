@@ -56,7 +56,7 @@ create table if not exists `users_setting`
 create table if not exists `major_follows`
 (
 	`m_id`				bigint primary key auto_increment not null,
-    `m_text`			varchar(20),
+    `sys_mid`			bigint,
     `u_id`				bigint,
     foreign key(u_id)references users_1(u_id) on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;

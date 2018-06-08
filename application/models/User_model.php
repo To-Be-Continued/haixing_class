@@ -321,5 +321,120 @@ class User_model extends CI_Model {
 		else
 			return json_decode($data, true);
 	}
+
+
+	/*
+	 * 获取用户信息
+	 */
+	public function get_info($form)
+	{
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$this->check_token($form['token']);
+		}
+
+		//get infomation
+		$data = array('u_nickname', 'u_sex', 'u_birth', 'u_isseller', 'u_isiden', 'u_email',
+					  'u_qq', 'u_intro', 'u_imgpath', 'u_sch', 'u_major', 'u_name');
+		if (! $ret = $this->db->select($data)
+						->join('users_2', 'users_1.u_id=users_2.u_id')
+						->get_where('users_1', array('u_tel' => $form['u_tel']))
+						->result_array())
+		{
+			throw new Exception("invalid u_tel", 406);
+		}
+		return $ret[0];
+	}
+
+
+	/*
+	 * 用户设置
+	 */
+	public function user_setting($form)
+	{
+		$members = array('f_age', 'f_sch', 'f_name', 'f_major');
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+		$where = array('u_id' => $id);
+		$this->db->update('users_setting', filter($form, $members), $where);
+	}
+
+
+	/*
+	 * 获取用户设置
+	 */
+	public function get_setting($form)
+	{
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+
+		$data = array('f_age', 'f_sch', 'f_name', 'f_major');
+		$where = array('u_id' => $id);
+		if (! $ret = $this->db->select($data)
+							  ->where($where)
+							  ->get('users_setting')
+							  ->result_array())
+		{
+			throw new Exception("System Error", 406);
+		}
+
+		return $ret[0];
+	}
+
+
+	/*
+	 * 修改用户信息
+	 */
+	public function update_info($form)
+	{
+		//config
+		$members_1 = array('u_email', 'u_qq', 'u_name', 'u_sex', 'u_birth', 'u_sch', 'u_major');
+		$members_2 = array('u_nickname', 'u_intro');
+
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+
+		$where = array('u_id' => $id);
+
+		//do update
+		$this->db->update('users_1', filter($form, $members_1), $where);
+		$this->db->update('users_2', filter($form, $members_2), $where);
+	}
+
+
+	/*
+	 * 设置昵称
+	 */
+	public function set_nickname($form)
+	{
+		$members = array('u_nickname');
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+
+		if ($this->db->select('u_nickname')
+					 ->where(array('u_nickname' => $form['u_nickname']))
+					 ->get('users_2')
+					 ->result_array())
+		{
+			throw new Exception("invalid nickname", 406);
+		}
+
+		$where = array('u_id' => $id);
+		$this->db->update('users_2', filter($form, $members), $where);
+	}	
+
 }
 ?>
