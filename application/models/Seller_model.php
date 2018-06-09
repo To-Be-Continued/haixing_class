@@ -118,7 +118,7 @@ class Seller_model extends CI_Model
 		}
 
 		//get info
-		$where = array('c_releaseid' => $u_id, 'c_state >=' => 1, 'c_state <=' => 1);
+		$where = array('c_releaseid' => $u_id, 'c_state >=' => 1, 'c_state <=' => 2);
 		$ret = $this->db->select('c_name,c_imgpath,c_price,c_time,c_state,courses_1.c_id')
 						->join('courses_2', 'courses_1.c_id=courses_2.c_id')
 						->get_where('courses_1', $where)
@@ -318,6 +318,9 @@ class Seller_model extends CI_Model
 			$this->db->set($data)
 					->where($where)
 					->update('orders');
+		}else
+		{
+			throw new Exception("wrong state", 406);
 		}
 	}
 
