@@ -287,6 +287,13 @@ $config = array(
 			'label' => '评论ID',
 			'rules' => 'required'
 		)
+	),
+	'evaluate' => array(
+			array(
+			'field' => 'order_id',
+			'label' => '订单ID',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

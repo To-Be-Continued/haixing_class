@@ -718,6 +718,64 @@ class Buyer_model extends CI_Model{
 		}
 		return $ans;
 	}
+	/**
+	*买家确认授课完成-转入待评价
+	*/
+	public function wait_evaluate($form)
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$where = array('order_id' => $form['order_id']);
+		//确认订单存在
+		$ret = $this->db->select('order_state,c_id')
+				->where($where)
+				->get('orders')
+				->row_array();
+		
+		if(empty($ret))
+		{
+			throw new Exception("订单不存在", 406);	
+		}
+
+		$w = array('c_id' => $ret['c_id']);
+ 		
+		$r = $this->db->select('c_state')
+					->where($w)
+					->get('courses_2')
+					->row_array();
+		if(empty($ret))
+		{
+			throw new Exception("课程不存在", 406);	
+		}
+
+		//do update
+		$order_state = array('order_state' => 3);
+		$c_state = array('c_state' => 3);
+		if( $r['c_state'] == 2 && $ret['order_state'] == 2)
+		{
+			$this->db->set($order_state)
+					->where($where)
+					->update('orders');
+			
+			$this->db->set($c_state)
+					->where($w)
+					->update('courses_2');
+		}else
+		{
+			$data = array('c_state' => $r['c_state'],
+						'order_state' => $ret['order_state']);
+
+			throw new Exception("wrong state", 406);
+
+			return $data;
+			
+		}
+	}
 }
 
 ?>

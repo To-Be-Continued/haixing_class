@@ -857,6 +857,53 @@ class Buyer extends CI_Controller{
 		//return
 		output_data(400, '获取成功', $data);
 	}
+	/**
+	*买家确认授课完成-转入待评价
+	*/
+	public function wait_evaluate()
+	{
+		//config
+		$members = array('token','order_id');
+
+		try{
+
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['order_id'] = $this->input->post('order_id');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if (! $this->form_validation->run('evaluate'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && cancel order
+			$this->load->model('Buyer_model', 'my_buy');
+			$this->my_buy->wait_evaluate(filter($post, $members));
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return
+		output_data(400, '待评价', array());
+	}
 	
 }
 ?>
