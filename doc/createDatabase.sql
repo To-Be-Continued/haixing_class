@@ -181,13 +181,18 @@ create table if not exists `sys_token`
 
 create table if not exists `thumbsup`
 (
-    `th_id`             bigint auto_increment primary key not null,
+    `th_id`            bigint auto_increment primary key not null,
     `com_id`           bigint,
     `u_id`             bigint,
     foreign key(u_id)references users_1(u_id)on delete cascade on update cascade,
     foreign key(com_id)references comments(com_id)on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table if not exists `picturerotation`
+(
+    `pic_id`           bigint auto_increment primary key not null,
+    `pic_path`         varchar(100)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
