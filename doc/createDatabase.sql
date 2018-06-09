@@ -41,7 +41,7 @@ create table if not exists `users_3`
     `u_cousales`		int default '0',
     `u_coulen`			int default '0',
     `u_fans`			int default '0',
-    'u_money'           int default '0',
+    `u_money`           int default '0',
     foreign key(u_id)references users_1(u_id) on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -131,6 +131,7 @@ create table if not exists `comments`
     `com_text` 			varchar(50),
     `com_like`			int default '0',
     `com_star`			int default '0',
+    `com_time`          timestamp default current_timestamp,
     `c_id`				bigint,
     `u_id`				bigint,
     foreign key(c_id)references courses_1(c_id)on delete cascade on update cascade,

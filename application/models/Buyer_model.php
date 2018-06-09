@@ -470,7 +470,7 @@ class Buyer_model extends CI_Model{
 			throw new Exception("invalid order_state", 406);
 		}
 		$form['u_id'] = $u_id;
-		$this->db->insert('ecomments', filter($form, $members));
+		$this->db->insert('comments', filter($form, $members));
 		$data = array('order_state'=> 4);
 		$this->db->update('orders', $data, $where);
 	}
@@ -481,7 +481,8 @@ class Buyer_model extends CI_Model{
 	 */
 	public function get_list($form)
 	{
-		$members = array('com_id', 'com_text', 'com_like', 'com_star', 'com_nickname', 'com_tel', 'is_like');
+		$members = array('com_id', 'com_text', 'com_like', 'com_star', 'com_nickname',
+						 'com_tel', 'is_like', 'com_imgpath', 'com_time');
 
 		//check token & get user
 		if(isset($form['token']))
@@ -490,9 +491,9 @@ class Buyer_model extends CI_Model{
 			$u_id = $this->my_user->get($form);
 		}
 
-		if (! $ret = $this->db->select('com_id, com_text, com_like, com_star, u_id')
+		if (! $ret = $this->db->select('com_id, com_text, com_like, com_star, com_time, u_id')
 							  ->where(array('c_id' => $form['c_id']))
-							  ->get('ecomments')
+							  ->get('comments')
 							  ->result_array())
 		{
 			throw new Exception("invalid c_id", 406);
@@ -507,12 +508,13 @@ class Buyer_model extends CI_Model{
 
 			$ret[$key]['com_nickname'] = null;
 			$ret[$key]['is_like'] = 0;
-			if ( $nick = $this->db->select('u_nickname')
+			if ( $nick = $this->db->select('u_nickname, u_imgpath')
 						 		  ->where(array('u_id' => $value['u_id']))
 						 		  ->get('users_2')
 						          ->result_array())
 			{
 				$ret[$key]['com_nickname'] = $nick[0]['u_nickname'];
+				$ret[$key]['com_imgpath'] = $nick[0]['u_imgpath'];
 			}
 			if ($value['u_id'] == $u_id)
 			{
@@ -664,24 +666,37 @@ class Buyer_model extends CI_Model{
 	/*
 	 * 获取卖家列表
 	 */
-	public function get_sellerlist()
+	public function get_sellerlist($form)
 	{
 		//check token
 		if (isset($form['token']))
 		{
 			$this->load->model('User_model', 'my_user');
-			$this->my_user->check_token($form['token']);
+			$id = $this->my_user->get($form);
 		}
 
 		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
 					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
 
-		$where=array('u_isseller='=>1);
+		$where=array('u_isseller=' => 1);
 		$ret = $this->db->select($data)
 						->join('users_2','users_2.u_id=users_1.u_id')
 						->join('users_3','users_3.u_id=users_1.u_id')
 						->get_where('users_1', $where)
 						->result_array();
+
+		foreach ($ret as $key => $value) {
+			$ret[$key]['is_follow'] = 0;
+			$where = array(
+				'fan_to' => $this->db->select('u_id')->where(array('u_tel'=>$value['u_tel']))
+									->get('users_1')->result_array()[0]['u_id'],
+				'fan_from' => $id
+			);
+			if ($que = $this->db->select()->where($where)->get('fans')->result_array())
+			{
+				$ret[$key]['is_follow'] = 1;
+			}
+		}
 
 		return $ret;
 	}
@@ -708,7 +723,7 @@ class Buyer_model extends CI_Model{
 		}
 
 		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
-					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr', 'u_sch');
 		foreach ($ret as $key => $value) {
 			$ans[$key] = $this->db->select($data)
 								->join('users_2','users_2.u_id=users_1.u_id')
@@ -775,6 +790,58 @@ class Buyer_model extends CI_Model{
 			return $data;
 			
 		}
+	}
+
+
+	/*
+	 * 搜索卖家
+	 */
+	public function get_seller($form)
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+
+		$where = array('u_tel' => $form['key']);
+		$ret = $this->db->select($data)
+						->like('u_tel',$form['key'])
+						->or_like('u_nickname', $form['key'])
+						->join('users_2','users_2.u_id=users_1.u_id')
+						->join('users_3','users_3.u_id=users_1.u_id')
+						->get_where('users_1', array('u_isseller=' => 1))
+						->result_array();
+
+		return $ret;
+	}
+
+
+	/*
+	 * 模糊搜索课程
+	 */
+	public function get_cou($form)
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('courses_1.c_id', 'c_name', 'c_star', 'c_time', 'c_place', 'c_price', 'c_imgpath');
+
+		$ret = $this->db->select($data)
+						->like(array('c_name' => $form['key']))
+						->join('courses_2', 'courses_2.c_id=courses_1.c_id')
+						->get('courses_1')
+						->result_array();
+
+		return $ret;
 	}
 }
 
