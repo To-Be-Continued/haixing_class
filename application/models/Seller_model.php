@@ -36,13 +36,13 @@ class Seller_model extends CI_Model
 
 		if(!isset($form['tags']))
 		{
-			throw new Exception("标签字段不能为空", 1);
+			throw new Exception("标签字段不能为空", 406);
 			
 		}
 
 		//object translate into json array
-		$arr = json_decode(json_encode($form['tags']),true);
-		
+		//$arr = json_decode(json_encode($form['tags']),true);
+		$arr = explode(",", $form['tags']);
 		if(empty($arr))
 		{
 			throw new Exception("至少含有一个标签");
@@ -74,6 +74,8 @@ class Seller_model extends CI_Model
 			);
 			$this->db->insert('tags',$where);			
 		}
+
+
 	}
 
 
