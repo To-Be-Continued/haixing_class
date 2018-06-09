@@ -131,6 +131,7 @@ create table if not exists `comments`
     `com_text` 			varchar(50),
     `com_like`			int default '0',
     `com_star`			int default '0',
+    `com_time`          timestamp default current_timestamp,
     `c_id`				bigint,
     `u_id`				bigint,
     foreign key(c_id)references courses_1(c_id)on delete cascade on update cascade,
