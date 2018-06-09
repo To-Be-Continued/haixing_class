@@ -280,6 +280,13 @@ $config = array(
 			'label' => '专业',
 			'rules' => 'required'
 		),
+	),
+	'thumbup' => array(
+		array(
+			'field' => 'com_id',
+			'label' => '评论ID',
+			'rules' => 'required'
+		)
 	)
 );
 ?>

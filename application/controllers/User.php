@@ -565,6 +565,51 @@ class User extends CI_Controller {
 		//return
 		output_data(400, '修改成功', array());
 	}
+	/**
+	*用户点赞
+	*/
+	public function give_thumbup()
+	{
+		//config
+		$members = array('token','com_id') ;
+
+		try{
+			//get post 
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['com_id'] = $this->input->post('com_id');
+			}
+			$post['token']=get_token();
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_data($post);
+			if ( ! $this->form_validation->run('thumbup'))
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & get_info
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->give_thumbup(filter($post, $members));	
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return
+		output_data(400, '点赞成功', array());
+	}
 } 
 
 ?>

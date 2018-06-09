@@ -435,5 +435,30 @@ class User_model extends CI_Model {
 		$where = array('u_id' => $id);
 		$this->db->update('users_2', filter($form, $members), $where);
 	}	
+	/**
+	*用户点赞
+	*/
+	public function give_thumbup($form)
+	{
+		//check token && get u_id
+		if (isset($form['token']))
+		{
+			$this->load->model('User_model', 'my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		$data = array('u_id' => $u_id,'com_id' => $form['com_id']);
+		
+		if($ret = $this->db->select('com_id')
+						->get_where('comments',array('com_id' => $form['com_id']))
+						->row_array())
+		{
+			$this->db->insert('thumbsup',$data);
+		}else
+		{
+			throw new Exception("comment not exist", 406);
+		}
+		
+	}
 }
 ?>
