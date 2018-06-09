@@ -23,8 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-//$config['base_url'] = 'http://172.25.125.211/haixing/';
-$config['base_url'] = 'http://39.108.235.76/haixing/';
+$config['base_url'] = 'http://172.21.11.121/haixing/';
+//$config['base_url'] = 'http://39.108.235.76/haixing/';
 //$config['base_url'] = 'http://172.21.11.199/haixing/';
 //$config['base_url'] = 'http://192.168.43.36/haixing/'; 
 /*

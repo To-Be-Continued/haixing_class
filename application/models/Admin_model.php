@@ -68,6 +68,27 @@ class Admin_model extends CI_Model{
 				->where($where)
 				->update('courses_2');
 	}
+	/**
+	*图片轮播
+	*/
+	public function picture_rotation($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+		}
+
+		if( ! $ret = $this->db->select('pic_id,pic_path')
+								->get('picturerotation')
+								->result_array())
+		{
+			throw new Exception("no pictures", 406);
+		}
+
+		return $ret;
+
+	}
 
 }
 ?>
