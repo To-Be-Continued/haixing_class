@@ -119,8 +119,10 @@ create table if not exists `orders`
     `c_id`				bigint,
     `u_id`				bigint,
     `c_num`             int default '0',
+    `c_releaseid`       bigint,
     foreign key(c_id)references courses_1(c_id)on delete cascade on update cascade,
-    foreign key(u_id)references users_1(u_id)on delete cascade on update cascade
+    foreign key(u_id)references users_1(u_id)on delete cascade on update cascade,
+    foreign key(c_releaseid)references users_1(u_id)on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	
 create table if not exists `ecomments`

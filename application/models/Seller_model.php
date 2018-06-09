@@ -541,6 +541,54 @@ class Seller_model extends CI_Model
 		return $ret;
 
 	}
+	public function get_fanslist($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		$where = array('fan_from' => $u_id);
+		if( ! $ret = $this->db->select('fan_to,u_nickname,u_imgpath,u_sch')
+								->join('users_1','users_1.u_id=fans.fan_to')
+								->join('users_2','users_2.u_id=fans.fan_to')
+								->get_where('fans',$where)
+								->result_array())
+		{
+			throw new Exception("no fans", 406);
+		}
+
+		return $ret;
+	}
+
+	/**
+	*卖家界面--订单列表
+	*/
+	public function get_orderslist($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		$where = array('orders.c_releaseid' => $u_id);
+		if(!$ret = $this->db->select('order_id,order_time,c_num,c_place,c_name,order_money,u_tel')
+							->join('users_1','users_1.u_id=orders.u_id')
+							->join('courses_1','courses_1.c_id=orders.c_id')
+							->join('courses_2','courses_2.c_id=orders.c_id')
+							->get_where('orders',$where)
+							->result_array())
+		{
+			throw new Exception("no orders", 406);
+		}
+
+		return $ret;
+
+	}
 
 }
 
