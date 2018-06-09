@@ -49,8 +49,8 @@ class Seller_model extends CI_Model
 			
 		}
 		//check if exist
-		$arr = array('c_major', 'c_name', 'c_detail');
-		$data = filter($form, $arr);
+		$mem = array('c_major', 'c_name', 'c_detail');
+		$data = filter($form, $mem);
 		if ( $this->db->select()
 					  ->like($data)
 					  ->get('courses_1')
