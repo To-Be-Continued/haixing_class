@@ -30,15 +30,12 @@
 		}
 	</style>
 	<script type="text/javascript">
-<<<<<<< Updated upstream
 		var Table =
 		{
-
+			button:[],
 			Init:function()
 			{
-				for (var i = 0; i < 5; i++) {
-					
-					
+				for (var i = 0; i < 5; i++) {				
 				}
 			},
 			Get:function()
@@ -67,7 +64,7 @@
                         	tableItem.append("<td>"+dataObj[i].c_place+"</td>");
                         	tableItem.append("<td>"+dataObj[i].c_price+"</td>");
                         	tableItem.append("<td>"+dataObj[i].c_releaseid+"</td>");
-                        	tableItem.append("<td><input type='button' value='审核' onclick='"+Table.Examine(dataObj[i].c_id)+"'></td>");
+                        	tableItem.append("<td><input type='button' value='审核' onclick="+Table.Examine()+"></td>");
                         }
                     },
                     error:function(data)
@@ -76,13 +73,13 @@
                     }
                 });
 			},
-			Examine:function(c_id)
+			Examine:function()
 			{
 				$.ajax(
                 {
                     type:"POST",
                     url:"<?php echo site_url('Admin/cou_list')?>",
-                    data:{"token":"<?php echo $this->session->token?>","c_id":c_id},
+                    data:{"token":"<?php echo $this->session->token?>","c_id":1},
                     dataType:"JSON",
                     async:false,
                     success:function(data)
@@ -94,13 +91,9 @@
 		}
 	</script>
 </head>
+
 <body>
 	<input type="button" name="button" value="hah" onclick= "Table.Get()">
-=======
-	</script>
-</head>
-<body>
->>>>>>> Stashed changes
 	<div id="table_div">
 		<table id="table" cellspacing="0" cellpadding="0">
 			<thead>
@@ -118,62 +111,15 @@
 					<th>审核</th>
 				</tr>
 			</thead>
-<<<<<<< Updated upstream
-
 			<tbody id="tbody">
 			</tbody>
 		</table>
 	</div>
+	
 	<script type="text/javascript">
-		
-		
+
 		Table.Get();
-=======
-
-			<tbody id="tbody">
-			</tbody>
-		</table>
-	</div>
-	<script type="text/javascript">
 		
-		var Table =
-		{
-			Init:function()
-			{
-				for (var i = 0; i < 5; i++) {
-					
-					var tr = document.createElement('tr');
-					var tbody = document.getElementById('tbody');
-					tbody.appendChild(tr);
-					tr.appendChild(document.createElement('td').innerHTML('22'));
-					/*var box = document.createElement('td');
-					var c_id = document.createElement('td');
-					var c_img = document.createElement('td');
-					var c_name = document.createElement('td');
-					var c_major = document.createElement('td');
-					var c_detail = document.createElement('td');
-					var c_time = document.createElement('td');
-					var c_place = document.createElement('td');
-					var c_price = document.createElement('td');
-					var u_id = document.createElement('td');
-					
-					box.innerHTML = "22";
-					c_id.innerHTML = "33";
-					var tbody = document.getElementById('tbody');
-					box.innerHTML = "1";
-					tbody.appendChild(tr);
-					tr.appendChild(box);
-					tr.appendChild(c_id);
-					tr.appendChild(c_id);
-					tr.appendChild(box);
-					tr.appendChild(box);*/
-
-
-				}
-			}
-		}
-
->>>>>>> Stashed changes
 		Table.Init();
 	</script>
 </body>
