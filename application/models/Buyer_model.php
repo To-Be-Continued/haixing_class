@@ -791,6 +791,34 @@ class Buyer_model extends CI_Model{
 			
 		}
 	}
+
+
+	/*
+	 * 搜索卖家
+	 */
+	public function get_seller($form)
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+
+		$where = array('u_tel' => $form['key']);
+		$ret = $this->db->select($data)
+						->like('u_tel',$form['key'])
+						->or_like('u_nickname', $form['key'])
+						->join('users_2','users_2.u_id=users_1.u_id')
+						->join('users_3','users_3.u_id=users_1.u_id')
+						->get_where('users_1', array('u_isseller=' => 1))
+						->result_array();
+
+		return $ret;
+	}
 }
 
 ?>
