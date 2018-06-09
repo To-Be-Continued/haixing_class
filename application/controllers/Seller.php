@@ -617,6 +617,31 @@ class Seller extends CI_Controller {
 		//return
 		output_data(400, '获取成功', $data);
 	}
+	/**
+	*教学动态
+	*/
+	public function get_teachingtrends()
+	{
+		//config
+		$member = array('token');
+
+		try{
+			//get token
+			$post['token'] = get_token();
+
+			//filter $$ list
+			$this->load->model('Seller_model','my_sell');
+			$data = $this->my_sell->get_teachingtrends(filter($post,$member));
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+
+		//return
+		output_data(400,'获取成功',$data);
+	}
 }
 
 ?>
