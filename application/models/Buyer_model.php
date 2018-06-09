@@ -666,24 +666,37 @@ class Buyer_model extends CI_Model{
 	/*
 	 * 获取卖家列表
 	 */
-	public function get_sellerlist()
+	public function get_sellerlist($form)
 	{
 		//check token
 		if (isset($form['token']))
 		{
 			$this->load->model('User_model', 'my_user');
-			$this->my_user->check_token($form['token']);
+			$id = $this->my_user->get($form);
 		}
 
 		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
 					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
 
-		$where=array('u_isseller='=>1);
+		$where=array('u_isseller=' => 1);
 		$ret = $this->db->select($data)
 						->join('users_2','users_2.u_id=users_1.u_id')
 						->join('users_3','users_3.u_id=users_1.u_id')
 						->get_where('users_1', $where)
 						->result_array();
+
+		foreach ($ret as $key => $value) {
+			$ret[$key]['is_follow'] = 0;
+			$where = array(
+				'fan_to' => $this->db->select('u_id')->where(array('u_tel'=>$value['u_tel']))
+									->get('users_1')->result_array()[0]['u_id'],
+				'fan_from' => $id
+			);
+			if ($que = $this->db->select()->where($where)->get('fans')->result_array())
+			{
+				$ret[$key]['is_follow'] = 1;
+			}
+		}
 
 		return $ret;
 	}
