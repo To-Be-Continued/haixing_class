@@ -723,7 +723,7 @@ class Buyer_model extends CI_Model{
 		}
 
 		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
-					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
+					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr', 'u_sch');
 		foreach ($ret as $key => $value) {
 			$ans[$key] = $this->db->select($data)
 								->join('users_2','users_2.u_id=users_1.u_id')
