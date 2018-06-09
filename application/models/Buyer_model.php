@@ -470,7 +470,7 @@ class Buyer_model extends CI_Model{
 			throw new Exception("invalid order_state", 406);
 		}
 		$form['u_id'] = $u_id;
-		$this->db->insert('ecomments', filter($form, $members));
+		$this->db->insert('comments', filter($form, $members));
 		$data = array('order_state'=> 4);
 		$this->db->update('orders', $data, $where);
 	}
@@ -481,7 +481,8 @@ class Buyer_model extends CI_Model{
 	 */
 	public function get_list($form)
 	{
-		$members = array('com_id', 'com_text', 'com_like', 'com_star', 'com_nickname', 'com_tel', 'is_like');
+		$members = array('com_id', 'com_text', 'com_like', 'com_star', 'com_nickname',
+						 'com_tel', 'is_like', 'com_imgpath', 'com_time');
 
 		//check token & get user
 		if(isset($form['token']))
@@ -490,9 +491,9 @@ class Buyer_model extends CI_Model{
 			$u_id = $this->my_user->get($form);
 		}
 
-		if (! $ret = $this->db->select('com_id, com_text, com_like, com_star, u_id')
+		if (! $ret = $this->db->select('com_id, com_text, com_like, com_star, com_time, u_id')
 							  ->where(array('c_id' => $form['c_id']))
-							  ->get('ecomments')
+							  ->get('comments')
 							  ->result_array())
 		{
 			throw new Exception("invalid c_id", 406);
@@ -507,12 +508,13 @@ class Buyer_model extends CI_Model{
 
 			$ret[$key]['com_nickname'] = null;
 			$ret[$key]['is_like'] = 0;
-			if ( $nick = $this->db->select('u_nickname')
+			if ( $nick = $this->db->select('u_nickname, u_imgpath')
 						 		  ->where(array('u_id' => $value['u_id']))
 						 		  ->get('users_2')
 						          ->result_array())
 			{
 				$ret[$key]['com_nickname'] = $nick[0]['u_nickname'];
+				$ret[$key]['com_imgpath'] = $nick[0]['u_imgpath'];
 			}
 			if ($value['u_id'] == $u_id)
 			{
