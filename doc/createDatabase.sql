@@ -191,6 +191,7 @@ create table if not exists `thumbsup`
 create table if not exists `picturerotation`
 (
     `pic_id`           bigint auto_increment primary key not null,
+    `pic_name`         varchar(50),
     `pic_path`         varchar(100)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
