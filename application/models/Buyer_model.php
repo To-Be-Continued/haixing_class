@@ -718,6 +718,35 @@ class Buyer_model extends CI_Model{
 		}
 		return $ans;
 	}
+	/**
+	*教学动态
+	*/
+	public function get_teachingtrends($form)
+	{
+		//check token && get user
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$u_id = $this->my_user->get($form);
+		}
+
+		$ret = array();
+		$where = array('u_id' => $u_id);
+		if( ! $ret['c_info'] = $this->db->select('c_name,orders.c_id')
+								->join('courses_1','courses_1.c_id = orders.c_id')
+								->get_where('orders',$where)
+								->result_array())
+		{
+			throw new Exception("no complete courses", 406);
+		}
+        
+        $ret['u_info'] = $this->db->select('u_cousum,u_coulen,u_level,u_money') 
+        				      ->join('users_2','users_2.u_id=users_3.u_id')
+        				      ->get_where('users_3',array('users_3.u_id' => $u_id))
+        				      ->row_array();
+		return $ret;
+
+	}
 }
 
 ?>

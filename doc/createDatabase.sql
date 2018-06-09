@@ -41,6 +41,7 @@ create table if not exists `users_3`
     `u_cousales`		int default '0',
     `u_coulen`			int default '0',
     `u_fans`			int default '0',
+    'u_money'           int default '0',
     foreign key(u_id)references users_1(u_id) on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

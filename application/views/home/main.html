@@ -19,10 +19,13 @@
 			border: 1px solid #c4c4c4;
 			height: 110px;
 		}
+<<<<<<< Updated upstream
 		img{
 			width: 100px;
 			height: 100px;
 		}
+=======
+>>>>>>> Stashed changes
 		#table_div{
 			width: 1300px;
 			height: 585px;
@@ -30,6 +33,7 @@
 		}
 	</style>
 	<script type="text/javascript">
+<<<<<<< Updated upstream
 		var Table =
 		{
 
@@ -95,6 +99,11 @@
 </head>
 <body>
 	<input type="button" name="button" value="hah" onclick= "Table.Get()">
+=======
+	</script>
+</head>
+<body>
+>>>>>>> Stashed changes
 	<div id="table_div">
 		<table id="table" cellspacing="0" cellpadding="0">
 			<thead>
@@ -112,6 +121,7 @@
 					<th>审核</th>
 				</tr>
 			</thead>
+<<<<<<< Updated upstream
 
 			<tbody id="tbody">
 			</tbody>
@@ -121,6 +131,52 @@
 		
 		
 		Table.Get();
+=======
+
+			<tbody id="tbody">
+			</tbody>
+		</table>
+	</div>
+	<script type="text/javascript">
+		
+		var Table =
+		{
+			Init:function()
+			{
+				for (var i = 0; i < 5; i++) {
+					
+					var tr = document.createElement('tr');
+					var tbody = document.getElementById('tbody');
+					tbody.appendChild(tr);
+					tr.appendChild(document.createElement('td').innerHTML('22'));
+					/*var box = document.createElement('td');
+					var c_id = document.createElement('td');
+					var c_img = document.createElement('td');
+					var c_name = document.createElement('td');
+					var c_major = document.createElement('td');
+					var c_detail = document.createElement('td');
+					var c_time = document.createElement('td');
+					var c_place = document.createElement('td');
+					var c_price = document.createElement('td');
+					var u_id = document.createElement('td');
+					
+					box.innerHTML = "22";
+					c_id.innerHTML = "33";
+					var tbody = document.getElementById('tbody');
+					box.innerHTML = "1";
+					tbody.appendChild(tr);
+					tr.appendChild(box);
+					tr.appendChild(c_id);
+					tr.appendChild(c_id);
+					tr.appendChild(box);
+					tr.appendChild(box);*/
+
+
+				}
+			}
+		}
+
+>>>>>>> Stashed changes
 		Table.Init();
 	</script>
 </body>

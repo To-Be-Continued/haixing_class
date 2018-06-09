@@ -435,6 +435,5 @@ class User_model extends CI_Model {
 		$where = array('u_id' => $id);
 		$this->db->update('users_2', filter($form, $members), $where);
 	}	
-
 }
 ?>
