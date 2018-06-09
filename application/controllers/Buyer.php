@@ -953,6 +953,55 @@ class Buyer extends CI_Controller{
 		//return
 		output_data(400, '搜索成功', $data);
 	}
+
+
+	/*
+	 * 模糊搜索课程
+	 */
+	public function get_cou()
+	{
+		//config
+		$members = array('token', 'key');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['key'] = $this->input->post('key');
+			}
+			$post['token'] = get_token();
+
+			//check form
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('key', '关键字', 'required');
+			if (! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member) 
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter && get
+			$this->load->model('Buyer_model', 'my_buy');
+			$data = $this->my_buy->get_cou(filter($post, $members));
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(),$e->getMessage(), array());
+			return;
+		}
+
+		//return
+		output_data(400, '搜索成功', $data);
+	}
 	
 }
 ?>

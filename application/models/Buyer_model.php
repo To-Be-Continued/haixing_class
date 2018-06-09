@@ -819,6 +819,30 @@ class Buyer_model extends CI_Model{
 
 		return $ret;
 	}
+
+
+	/*
+	 * 模糊搜索课程
+	 */
+	public function get_cou($form)
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('courses_1.c_id', 'c_name', 'c_star', 'c_time', 'c_place', 'c_price', 'c_imgpath');
+
+		$ret = $this->db->select($data)
+						->like(array('c_name' => $form['key']))
+						->join('courses_2', 'courses_2.c_id=courses_1.c_id')
+						->get('courses_1')
+						->result_array();
+
+		return $ret;
+	}
 }
 
 ?>
