@@ -163,7 +163,7 @@ class Buyer_model extends CI_Model{
 	public function cou_order($form)
 	{
 		//config
-		$members = array('c_id', 'order_money', 'u_id');
+		$members = array('c_id', 'order_money', 'u_id','c_releaseid');
 
 		//check token
 		if (isset($form['token']))
@@ -174,14 +174,20 @@ class Buyer_model extends CI_Model{
 		}
 
 		//check c_id
-		if ( ! $this->db->select('c_id')
+		if (!$this->db->select('c_id')
 						->where(array('c_id' => $form['c_id']))
 						->get('courses_1')
 						->result_array())
 		{
 			throw new Exception("数据库错误", 406);
 		}
+			
+		$ret=$this->db->select('c_releaseid')
+						->where(array('c_id' => $form['c_id']))
+						->get('courses_1')
+						->result_array();
 
+		$form['c_releaseid'] = $ret[0]['c_releaseid'];
 		//check state
 		$where = array('c_id' => $form['c_id']);
 		if (  $this->db->select('c_state')
