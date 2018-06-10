@@ -679,7 +679,7 @@ class Buyer_model extends CI_Model{
 		$data = array('u_tel', 'u_nickname', 'u_imgpath', 'u_credit', 'u_level', 'u_intro',
 					  'u_fans', 'u_coulen', 'u_cousales', 'u_cousum', 'u_coucsr');
 
-		$where=array('u_isseller=' => 1);
+		$where=array('u_isseller=' => 0);
 		$ret = $this->db->select($data)
 						->join('users_2','users_2.u_id=users_1.u_id')
 						->join('users_3','users_3.u_id=users_1.u_id')
