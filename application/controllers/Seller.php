@@ -143,7 +143,7 @@ class Seller extends CI_Controller {
 		}
 
 		//return
-		output_data('400', '获取成功', $data);
+		output_data(400, '获取成功', $data);
 	}
 
 
@@ -169,7 +169,7 @@ class Seller extends CI_Controller {
 		}
 
 		//return
-		output_data('400', '获取成功', $data);
+		output_data(400, '获取成功', $data);
 	}
 
 
@@ -195,7 +195,7 @@ class Seller extends CI_Controller {
 		}
 
 		//return
-		output_data('400', '获取成功', $data);
+		output_data(400, '获取成功', $data);
 	}
 
 
