@@ -491,7 +491,7 @@ class Seller_model extends CI_Model
 			$this->my_user->check_token($form['token']);
 		}
 
-		$where = array('u_tel' => $form['u_tel']);
+		$where = array('users_1.u_id' => $form['u_id']);
 		//check if seller
 		if ( ! $que = $this->db->select('u_isseller')
 							   ->where($where)
@@ -504,7 +504,7 @@ class Seller_model extends CI_Model
 		{
 			throw new Exception("invalid seller_tel", 406);
 		}
-		$data = array('u_email', 'u_qq', 'u_nickname', 'u_intro', 'u_sex', 'u_birth','u_sch',
+		$data = array('u_tel','u_email', 'u_qq', 'u_nickname', 'u_intro', 'u_sex', 'u_birth','u_sch',
 					  'u_name', 'u_major', 'u_level', 'u_point', 'u_credit', 'u_imgpath', 
 					  'u_coucsr', 'u_cousales', 'u_coulen', 'u_cousum', 'u_fans');
 		if ( ! $ret = $this->db->select($data)
@@ -513,7 +513,7 @@ class Seller_model extends CI_Model
 							   ->get_where('users_1', $where)
 							   ->result_array())
 		{
-			throw new Exception("invalid u_tel", 406);
+			throw new Exception("invalid u_id", 406);
 		}
 		return $ret[0];
 	}

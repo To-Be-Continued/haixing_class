@@ -576,7 +576,7 @@ class Seller extends CI_Controller {
 	public function get_detail()
 	{
 		//config
-		$members = array('token', 'u_tel');
+		$members = array('token', 'u_id');
 
 		try 
 		{
@@ -584,13 +584,13 @@ class Seller extends CI_Controller {
 			$post = get_post();
 			if (empty($post))
 			{
-				$post['u_tel'] = $this->input->post('u_tel');
+				$post['u_id'] = $this->input->post('u_id');
 			}
 			$post['token'] = get_token();
 
 			//check form
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules('u_tel', '手机号', 'required');
+			$this->form_validation->set_rules('u_id', '用户ID', 'required');
 			if (! $this->form_validation->run())
 			{
 				$this->load->helper('form');
