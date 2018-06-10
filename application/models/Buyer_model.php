@@ -836,10 +836,11 @@ class Buyer_model extends CI_Model{
 
 		$data = array('courses_1.c_id', 'c_name', 'c_star', 'c_time', 'c_place', 'c_price', 'c_imgpath');
 
+		$where = array('c_state>='=>1,'c_state<='=>3);
 		$ret = $this->db->select($data)
 						->like(array('c_name' => $form['key']))
-						->join('courses_2', 'courses_2.c_id=courses_1.c_id')
-						->get('courses_1')
+						->join('courses_1', 'courses_2.c_id=courses_1.c_id')
+						->get_where('courses_2',$where)
 						->result_array();
 
 		return $ret;
