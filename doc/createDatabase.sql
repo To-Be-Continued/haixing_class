@@ -22,12 +22,12 @@ create table if not exists `users_1`
 create table if not exists `users_2`
 (
 	`u_id`				bigint primary key not null,
-    `u_nickname`		varchar(10),
+    `u_nickname`		varchar(100),
     `u_intro`			varchar(30),
     `u_level`			int default '0',
     `u_point`			int default '0',
     `u_credit`			int default '0',
-    `u_imgpath`			varchar(100),
+    `u_imgpath`			varchar(500),
     `u_learnedlen`		int default '0',
     `u_learnedsum`		int default '0',
     foreign key(u_id)references users_1(u_id) on delete cascade on update cascade 
