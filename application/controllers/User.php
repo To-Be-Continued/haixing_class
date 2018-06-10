@@ -610,6 +610,52 @@ class User extends CI_Controller {
 		//return
 		output_data(400, '点赞成功', array());
 	}
+	/**
+	*储存微信头像
+	*/
+	public function storage_imgpath()
+	{
+		//config
+		$members = array('token', 'u_imgpath');
+
+		try 
+		{
+			//get post
+			$post = get_post();
+			if (empty($post))
+			{
+				$post['u_imgpath'] = $this->input->post('u_imgpath');
+			}
+			$post['token']=get_token();
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('u_imgpath', '头像', 'required');
+			if ( ! $this->form_validation->run())
+			{
+				$this->load->helper('form');
+				foreach ($members as $member)
+				{
+					if (form_error($member))
+					{
+						throw new Exception(strip_tags(form_error($member)));
+					}
+				}
+				return;
+			}
+
+			//filter & storage
+			$this->load->model('User_model', 'my_user');
+			$this->my_user->storage_imgpath(filter($post, $members));	
+		}
+		catch (Exception $e) 
+		{
+			output_data($e->getCode(), $e->getMessage(), array());
+			return;	
+		}
+
+		//return
+		output_data(400, '存储成功', array());
+	}
 } 
 
 ?>

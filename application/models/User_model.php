@@ -460,5 +460,25 @@ class User_model extends CI_Model {
 		}
 		
 	}
+
+
+	/**
+	*储存微信头像
+	*/
+	public function storage_imgpath($form)
+	{
+		//config
+		$member = array('u_imgpath');
+		//check token & get user
+		if (isset($form['token']))
+		{
+			$id = $this->get($form);
+		}
+
+		$where = array('u_id' => $id);
+
+		//do update
+		$this->db->update('users_2', filter($form, $member), $where);
+	}
 }
 ?>
