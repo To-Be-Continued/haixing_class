@@ -287,6 +287,7 @@ class Buyer_model extends CI_Model{
 			$this->my_user->check_token($form['token']);
 		}
 
+		$where = array('c_state>='=>1,'c_state<='=>3);
 		$data = array('courses_1.c_id', 'c_name', 'c_star','c_time', 
 		 			  'c_place', 'c_price', 'c_imgpath');
 		$ret = $this->db->select($data)
