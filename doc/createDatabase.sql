@@ -15,7 +15,7 @@ create table if not exists `users_1`
     `u_sch`				varchar(20),
     `u_major`			varchar(20),
     `u_isiden`			boolean default '0',
-    `u_isseller`		boolean default '0',
+    `u_isseller`		boolean default '1',
     `u_age`            int
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
