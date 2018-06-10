@@ -292,7 +292,7 @@ class Buyer_model extends CI_Model{
 		 			  'c_place', 'c_price', 'c_imgpath');
 		$ret = $this->db->select($data)
 						->join('courses_2','courses_1.c_id=courses_2.c_id')
-						->get_where('courses_1')
+						->get_where('courses_1',$where)
 						->result_array();
 		
 		if (empty($ret))
