@@ -62,7 +62,6 @@ create table if not exists `major_follows`
     `u_id`				bigint,
     foreign key(u_id)references users_1(u_id) on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 create table if not exists `signs`
 (
 	`sign_id`			bigint auto_increment primary key not null,

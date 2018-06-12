@@ -153,8 +153,10 @@ class Admin extends CI_Controller
 			if (empty($post))
 			{
 				$post['c_id'] = $this->input->post('c_id');
+				$post['token'] = $this->input->post('token');
 			}
-			$post['token'] = get_token();
+			//$post['token'] = get_token();
+
 
 			//check form
 			$this->load->library('form_validation');

@@ -4,9 +4,44 @@
 		<style type="text/css">
 			body{
 				background-color: #676767;
+				margin: 0;
+				padding: 0;
+			}
+			a{
+				text-decoration:none;
+				color:#fff;
+				display: block;
+				text-indent:20px; 
+				height:40px; 
+				line-height:30px; 
+				width:100%; 
+				margin-bottom:1px;
+			}
+			table{
+				height: 100%;
+				width: 100%;
+			}
+			#logo{
+				height: 45px;
+				width: 45px;
+			}
+			#quit{
+				text-align: right;
+				padding-right: 10px;
+			}
+			a:hover{ 
+				color:#2a9dff;
 			}
 		</style>
 	</head>
 	<body>
+		<table>
+			<tr>
+				<td><img id="logo" src="<?php echo base_url('styles/image/admin/logo.png')?>"></td>
+				<td id="quit"><a href="<?php echo site_url('Admin/login')?>" target="_parent">注销</a></td>
+			</tr>
+		</table>
+		<script type="text/javascript">
+		</script>
 	</body>
 </html>

@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title>海星课堂后端管理系统</title>
+	<script type="text/javascript" src="<?php echo base_url('styles/js/');?>jquery.min.js"></script>
 	<style type="text/css">
 		body{
 			position: relative;
@@ -27,7 +28,6 @@
 </head>
 <body>
 	<div class="login">
-		<form id="form" action="<?php echo site_url('Admin/enter_home')?>" method="post">
 			<table cellspacing="0">
 				<tr>
 					<td id="title">
@@ -48,11 +48,43 @@
 				</tr>
 				<tr>
 					<td>
-						<input type="submit" value="登录">
+						<input type="button" value="登录" onclick="Login.Enter()">
 					</td>
 				</tr>
 			</table>
-		</form>
 	</div>
+	<script type="text/javascript">
+
+		var Login =
+		{
+			Enter:function()
+			{
+				$.ajax(
+	                {
+	                    type:"POST",
+	                    url:"<?php echo site_url('User/login')?>",
+	                    data:{"u_tel":$("#u_tel").val(),"u_pwd":$("#u_pwd").val()},
+	                    dataType:"JSON",
+	                    async:false,
+	                    success:function(data){
+	                    	if(data.type == 400)
+	                    	{
+	                    		sessionStorage.setItem('token',data.data.token);
+	                   
+	                    		window.location.href="<?php echo site_url('Admin/home')?>";
+	                    	}else
+	                    	{
+	                    		alert(data.message);
+	                    	}
+	                       
+	                    },
+	                    error:function(data)
+	                    {
+	                    	alert("发生错误");
+	                    }
+	                });
+			}
+		};
+	</script>
 </body>
 </html>

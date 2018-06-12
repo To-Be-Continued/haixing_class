@@ -28,7 +28,7 @@ class Admin_model extends CI_Model{
 		$data = array('courses_1.c_id','c_imgpath','c_name','c_major','c_detail'
 						,'c_time','c_place','c_price','c_releaseid');
 		$where = array('c_state' => 0);
-		$ret = $this->db->limit(5,0)
+		$ret = $this->db->limit(4,0)
 					->select($data)
 					->join('courses_2','courses_2.c_id=courses_1.c_id')
 					->get_where('courses_1',$where)

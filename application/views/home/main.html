@@ -7,9 +7,14 @@
 		body{
 		}
 		table{
-			width: 1300px;
-			margin: 0 auto;
-			text-align: center;
+			width: 100%;
+			font-size: 12px;
+			text-align: left;
+			color:#8d8d8d;
+			font-family: "微软雅黑";
+		}
+		thead{
+			background-color: #eeeeee;
 		}
 		th{
 			border:1px solid #c4c4c4;
@@ -25,14 +30,59 @@
 		}
 		#table_div{
 			width: 1300px;
-			height: 585px;
+			height: auto;
 			border: 1px solid #c4c4c4;
+			margin: 0 auto;
+		}
+		#page{
+			height: 40px;
+			text-align: right;
+			margin-top:10px;
 		}
 	</style>
+	
+	</script>
+</head>
+
+<body>
+	<div id="table_div">
+		<table id="table" cellspacing="0" cellpadding="0">
+			<thead>
+				<tr>
+					<th>课程ID</th>
+					<th>课程封面</th>
+					<th>课程名称</th>
+					<th>课程专业</th>
+					<th>课程介绍</th>
+					<th>时间</th>
+					<th>发布者ID</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="tbody">
+			</tbody>
+		</table>
+		<div id="page">
+			<div>
+				<span>页码1/3(22条记录)</span>
+				<button>上一页</button>
+				<button>1</button>
+				<button>2</button>
+				<button>3</button>
+				<button>下一页</button>
+				<span>每页5条记录</span>
+				<input type="text" name="num">
+				<button>GO</button>
+			</div>
+		</div>
+	</div>
+	
 	<script type="text/javascript">
+
 		var Table =
 		{
 			button:[],
+			tableinfo:[],
 			Init:function()
 			{
 				for (var i = 0; i < 5; i++) {				
@@ -44,28 +94,76 @@
                 {
                     type:"POST",
                     url:"<?php echo site_url('Admin/cou_list')?>",
-                    data:{"token":"<?php echo $this->session->token?>"},
+                    data:{"token":sessionStorage.getItem('token')},
                     dataType:"JSON",
                     async:false,
                     success:function(data){
-                        var dataObj = eval("("+JSON.stringify(data.data)+")");
+                                   
+                       if(data.type == 400)
+                       {
 
-                        for (var i = 0; i < dataObj.length; i++)
+                       		Table.tableinfo = eval("("+JSON.stringify(data.data)+")");
+                      
+	                        for (var i = 0; i < Table.tableinfo.length; i++)
+	                        {
+
+	                        	var tr = document.createElement("tr");
+
+	                        	var td1 = document.createElement("td");                    
+	                        	var td2 = document.createElement("td");
+	                        	var td3 = document.createElement("td");
+	                        	var td4 = document.createElement("td");
+	                        	var td5 = document.createElement("td");
+	                        	var td6 = document.createElement("td");
+	                        	var td7 = document.createElement("td");
+	                        	var td8 = document.createElement("td");
+	                        	
+	                        	td1.innerHTML = Table.tableinfo[i].c_id;  
+	                        	td3.innerHTML = Table.tableinfo[i].c_name;  
+	                        	td4.innerHTML = Table.tableinfo[i].c_major;  
+	                        	td5.innerHTML = Table.tableinfo[i].c_detail;  
+	                        	td6.innerHTML = "时间："+Table.tableinfo[i].c_time+
+	                        					"<br>地点："+Table.tableinfo[i].c_place+
+	                        					"<br>价格："+Table.tableinfo[i].c_price;  
+	                        	td7.innerHTML = Table.tableinfo[i].c_releaseid;  
+	                        	
+	                        	var img = document.createElement("img");
+	                        	img.setAttribute("src",Table.tableinfo[i].c_imgpath);
+	                        	td2.appendChild(img);
+	                        	//通过审核
+	                        	var a_y = document.createElement("a");
+	                        	a_y.setAttribute("href","javascript:void(0)");//相当于让href属性失效！  
+	        					a_y.setAttribute("onclick","Table.Examine("+Table.tableinfo[i].c_id+")");
+	                        	a_y.innerHTML = '通过';
+
+	                        	var a_n = document.createElement("a");
+	                        	a_n.setAttribute("href","javascript:void(0)");
+	                        	a_n.setAttribute("onclick","alert('拒绝')");
+	                        	a_n.innerHTML = '拒绝';  
+	                        
+	                        	var span = document.createElement("span");
+	                        	span.innerHTML = ' | ';
+	                        	td8.appendChild(a_y);
+	                        	td8.appendChild(span);
+								td8.appendChild(a_n);	                        	
+
+	                        	tr.appendChild(td1);
+	                        	tr.appendChild(td2);
+	                        	tr.appendChild(td3);
+	                        	tr.appendChild(td4);
+	                        	tr.appendChild(td5);
+	                        	tr.appendChild(td6);
+	                        	tr.appendChild(td7);
+	                        	tr.appendChild(td8);
+
+	                        	document.getElementById("tbody").appendChild(tr);
+	                        }
+                        	
+                        }else
                         {
-                        	var tableItem=$("<tr></tr>");
-                        	$("#tbody").append(tableItem);
-                        	tableItem.append("<td><input type=\"checkbox\" checked=\"checked\"></td>");
-                        	tableItem.append("<td>"+dataObj[i].c_id+"</td>");
-                        	tableItem.append("<td><img src='"+dataObj[i].c_imgpath+"'></td>");
-                        	tableItem.append("<td>"+dataObj[i].c_name+"</td>");
-                        	tableItem.append("<td>"+dataObj[i].c_major+"</td>");
-                        	tableItem.append("<td>"+dataObj[i].c_detail+"</td>");
-                        	tableItem.append("<td>"+dataObj[i].c_time+"</td>");
-                        	tableItem.append("<td>"+dataObj[i].c_place+"</td>");
-                        	tableItem.append("<td>"+dataObj[i].c_price+"</td>");
-                        	tableItem.append("<td>"+dataObj[i].c_releaseid+"</td>");
-                        	tableItem.append("<td><input type='button' value='审核' onclick="+Table.Examine()+"></td>");
-                        }
+                        	alert(data.message);
+                        }        
+                      
                     },
                     error:function(data)
                     {
@@ -73,54 +171,32 @@
                     }
                 });
 			},
-			Examine:function()
+			Examine:function(c_id)
 			{
 				$.ajax(
-                {
-                    type:"POST",
-                    url:"<?php echo site_url('Admin/cou_list')?>",
-                    data:{"token":"<?php echo $this->session->token?>","c_id":1},
-                    dataType:"JSON",
-                    async:false,
-                    success:function(data)
-                    {
-                    	alert('审核通过');
-                    }
-                });
+	                {
+	                    type:"POST",
+	                    url:"<?php echo site_url('Admin/cou_examine')?>",
+	                    data:{"token":sessionStorage.getItem('token'),"c_id":c_id},
+	                    dataType:"JSON",
+	                    async:false,
+	                    success:function(data)
+	                    {
+	                    	if(data.type == 400)
+	                    	{
+	                    		alert('审核通过');
+	                    		//刷新当前页面
+	                    		location.reload();
+	                    	}else{
+	                    		alert(data.message);
+	                    	}
+	                    	
+	                    }
+	                });
 			}
-		}
-	</script>
-</head>
-
-<body>
-	<input type="button" name="button" value="hah" onclick= "Table.Get()">
-	<div id="table_div">
-		<table id="table" cellspacing="0" cellpadding="0">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="" checked="checked"></th>
-					<th>课程ID</th>
-					<th>课程封面</th>
-					<th>课程名称</th>
-					<th>课程专业</th>
-					<th>课程介绍</th>
-					<th>时间</th>
-					<th>地点</th>
-					<th>价格</th>	
-					<th>发布者ID</th>
-					<th>审核</th>
-				</tr>
-			</thead>
-			<tbody id="tbody">
-			</tbody>
-		</table>
-	</div>
-	
-	<script type="text/javascript">
+		};
 
 		Table.Get();
-		
-		Table.Init();
 	</script>
 </body>
 </html>
