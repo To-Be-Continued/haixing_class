@@ -244,7 +244,7 @@ class Buyer extends CI_Controller{
 	public function cou_order()
 	{
 		//config
-		$members = array('token', 'c_id', 'order_money');
+		$members = array('token', 'c_id', 'c_num', 'order_money');
 
 		try 
 		{
@@ -254,6 +254,7 @@ class Buyer extends CI_Controller{
 			{
 				$post = array(
 					'c_id' 		  => $this->input->post('c_id'),
+					'c_num' 	  => $this->input->post('c_num'),
 					'order_money' => $this->input->post('order_money')
 				);
 

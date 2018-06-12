@@ -163,7 +163,7 @@ class Buyer_model extends CI_Model{
 	public function cou_order($form)
 	{
 		//config
-		$members = array('c_id', 'order_money', 'u_id','c_releaseid');
+		$members = array('c_id', 'order_money', 'c_num', 'u_id', 'c_releaseid');
 
 		//check token
 		if (isset($form['token']))
