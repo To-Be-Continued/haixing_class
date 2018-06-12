@@ -78,9 +78,11 @@
 	                    	}
 	                       
 	                    },
-	                    error:function(data)
+	                    error:function(x,t,e)
 	                    {
-	                    	alert("发生错误");
+	                    	alert(x);
+	                    	alert(t);
+	                    	alert(e);
 	                    }
 	                });
 			}

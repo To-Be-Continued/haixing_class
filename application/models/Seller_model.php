@@ -593,7 +593,7 @@ class Seller_model extends CI_Model
 		}
 
 		$where = array('orders.c_releaseid' => $u_id);
-		if(!$ret = $this->db->select('order_id,order_time,c_num,c_place,c_name,order_money,u_tel,order_state')
+		if(!$ret = $this->db->select('order_id,order_time,c_num,c_place,c_name,order_money,u_tel,order_state,c_imgpath,c_time')
 							->join('users_1','users_1.u_id=orders.u_id')
 							->join('courses_1','courses_1.c_id=orders.c_id')
 							->join('courses_2','courses_2.c_id=orders.c_id')
