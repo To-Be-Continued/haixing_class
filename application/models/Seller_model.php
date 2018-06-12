@@ -488,7 +488,7 @@ class Seller_model extends CI_Model
 		if (isset($form['token'])) 
 		{
 			$this->load->model('User_model', 'my_user');
-			$this->my_user->check_token($form['token']);
+			$u_id = $this->my_user->get($form);
 		}
 
 		$where = array('users_1.u_id' => $form['u_id']);
@@ -514,6 +514,18 @@ class Seller_model extends CI_Model
 							   ->result_array())
 		{
 			throw new Exception("invalid u_id", 406);
+		}
+		$where = array(
+			'fan_from' => $u_id,
+			'fan_to' => $form['u_id']
+		);
+		$ret[0]['is_follow'] = 0;
+		if ($this->db->select()
+					 ->where($where)
+					 ->get('fans')
+					 ->result_array())
+		{
+			$ret[0]['is_follow']=1;
 		}
 		return $ret[0];
 	}
@@ -581,7 +593,7 @@ class Seller_model extends CI_Model
 		}
 
 		$where = array('orders.c_releaseid' => $u_id);
-		if(!$ret = $this->db->select('order_id,order_time,c_num,c_place,c_name,order_money,u_tel')
+		if(!$ret = $this->db->select('order_id,order_time,c_num,c_place,c_name,order_money,u_tel,order_state')
 							->join('users_1','users_1.u_id=orders.u_id')
 							->join('courses_1','courses_1.c_id=orders.c_id')
 							->join('courses_2','courses_2.c_id=orders.c_id')

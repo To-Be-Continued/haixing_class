@@ -106,6 +106,11 @@ $config = array(
 			'rules' => 'required'
 		),
 		array(
+			'field' => 'c_num',
+			'label' => '购买数量',
+			'rules' => 'required'
+		),
+		array(
 			'field' => 'order_money',
 			'label' => '课程总金额',
 			'rules' => 'required'

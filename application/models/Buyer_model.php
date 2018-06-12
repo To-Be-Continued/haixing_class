@@ -163,7 +163,7 @@ class Buyer_model extends CI_Model{
 	public function cou_order($form)
 	{
 		//config
-		$members = array('c_id', 'order_money', 'u_id','c_releaseid');
+		$members = array('c_id', 'order_money', 'c_num', 'u_id', 'c_releaseid');
 
 		//check token
 		if (isset($form['token']))
@@ -675,13 +675,31 @@ class Buyer_model extends CI_Model{
 		if (isset($form['token']))
 		{
 			$this->load->model('User_model', 'my_user');
-			$this->my_user->check_token($form['token']);
+			$u_id = $this->my_user->get($form);
 		}
 
 		//get list
 		$ret = $this->db->select()
 						->get('sys_major')
 						->result_array();
+
+		if ($ret)
+		{
+			foreach ($ret as $key => $value) {
+				$ret[$key]['is_follow']=0;
+				$where = array(
+					'u_id'=>$u_id,
+					'sys_mid'=>$value['sys_mid']
+				);
+				if ($this->db->select()
+							 ->where($where)
+							 ->get('major_follows')
+							 ->result_array())
+				{
+					$ret[$key]['is_follow']=1;
+				}
+			}
+		}
 
 		return $ret;
 	}
