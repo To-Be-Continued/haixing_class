@@ -1,4 +1,9 @@
 <?php
+//允许网页跨域访问
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Utoken");
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Buyer extends CI_Controller{
