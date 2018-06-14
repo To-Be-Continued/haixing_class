@@ -22,7 +22,7 @@ class Admin_model extends CI_Model{
 		if(isset($form['token']))
 		{
 			$this->load->model('User_model','my_user');
-			$u_id = $this->my_user->get($form);
+			$this->my_user->check_token($form['token']);
 		}
 
 		$data = array('courses_1.c_id','c_imgpath','c_name','c_major','c_detail'
@@ -36,7 +36,7 @@ class Admin_model extends CI_Model{
 
 		if ( empty($ret) )
 		{
-			throw new Exception("invalid c_id", 406);
+			throw new Exception("无待审核课程", 406);
 		}
 
 		return $ret;
