@@ -49,6 +49,16 @@ create table if not exists `users_3`
     foreign key(u_id)references users_1(u_id) on delete cascade on update cascade
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table if not exists `users_power`
+(
+    `u_id`              bigint primary key not null,
+    `p_ucheck`          boolean default '0',
+    `p_ccheck`          boolean default '0',
+    `p_push`            boolean default '0',
+    `p_add`             boolean default '0',       
+    foreign key(u_id)references users_1(u_id) on delete cascade on update cascade
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 create table if not exists `users_setting`
 (
 	`u_id`				bigint primary key not null,
@@ -198,6 +208,7 @@ create table if not exists `picturerotation`
     `pic_name`         varchar(50),
     `pic_path`         varchar(100)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 
