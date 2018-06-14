@@ -47,7 +47,7 @@ class Admin extends CI_Controller
 	{
 		$this->load->view('home/home.html');
 	}
-	
+
 	//show top
 	public function top()
 	{
@@ -162,6 +162,30 @@ class Admin extends CI_Controller
 		}
 
 		//return
+		output_data(400,'获取成功',$data);
+	}
+
+	/**
+	*审核用户列表
+	*/
+	public function users_list()
+	{
+		//config
+		$member = array('token');
+
+		try{
+			$post['token'] = get_token();
+
+			//gilter $$ list
+			$this->load->model('Admin_model','my_admin');
+			$data = $this->my_admin->users_list(filter($post,$member));
+
+		}catch(Exception $e)
+		{
+			output_data($e->getCode(),$e->getMessage(),array());
+			return;
+		}
+		//return 
 		output_data(400,'获取成功',$data);
 	}
 }

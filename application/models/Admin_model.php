@@ -90,5 +90,32 @@ class Admin_model extends CI_Model{
 
 	}
 
+	/**
+	*审核用户列表
+	*/
+	public function users_list()
+	{
+		//check token
+		if(isset($form['token']))
+		{
+			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
+		}
+
+		$data = array('u_id','u_iden','u_name','u_sex','u_sch','u_major');
+
+		$where = array( 'u_isseller' => 1);
+		if(!$ret=$this->db->limit(4,0)
+							->select($data)
+							->get_where('users_1',$where)
+							->result_array())
+		{
+			throw new Exception('无待认证用户',406);
+		}
+
+		//return 
+		return $ret;
+	}
+
 }
 ?>
