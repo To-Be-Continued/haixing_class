@@ -77,6 +77,7 @@ class Admin_model extends CI_Model{
 		if(isset($form['token']))
 		{
 			$this->load->model('User_model','my_user');
+			$this->my_user->check_token($form['token']);
 		}
 
 		if( ! $ret = $this->db->select('pic_id,pic_path')
