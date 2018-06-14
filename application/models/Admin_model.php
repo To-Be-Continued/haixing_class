@@ -103,7 +103,7 @@ class Admin_model extends CI_Model{
 			$this->my_user->check_token($form['token']);
 		}
 
-		$data = array('u_id','u_iden','u_name','u_sex','u_sch','u_major');
+		$data = array('u_id','u_tel','u_name','u_sex','u_sch','u_major','u_authenticate','u_qq','u_email');
 
 		$where = array( 'u_isseller' => 1);
 		if(!$ret=$this->db->limit(4,0)

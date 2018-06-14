@@ -61,10 +61,20 @@ class Admin extends CI_Controller
 	}
 
 	//show main
-	public function main()
+	public function courses()
 	{
-		$this->load->view('home/main.html');
+		$this->load->view('home/courses.html');
 	}
+	//show users_list
+	public function users()
+	{
+		$this->load->view('home/users.html');
+	}
+	//show pushmessage
+	public function pushmessage()
+	{
+		$this->load->view('home/pushmessage.html');
+	} 
 
 	/**
 	*get table data
@@ -77,7 +87,7 @@ class Admin extends CI_Controller
 		try
 		{
 			//get token
-			$post['token'] = $this->input->post('token');
+			$post['token'] = get_token();
 			//get data
 			$this->load->model('Admin_model','my_admin');
 			$ret = $this->my_admin->cou_list(filter($post,$member));
@@ -175,7 +185,7 @@ class Admin extends CI_Controller
 
 		try{
 			$post['token'] = get_token();
-
+			//$post['token'] = $this->input->post('token');
 			//gilter $$ list
 			$this->load->model('Admin_model','my_admin');
 			$data = $this->my_admin->users_list(filter($post,$member));

@@ -4,9 +4,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript" src="<?php echo base_url('styles/js/');?>jquery.min.js"></script>
 	<style type="text/css">
-		body{
-		}
+		*{  
+            margin:0;  
+            padding:0;  
+        }  
 		table{
+			margin-top: 20px;
 			width: 100%;
 			font-size: 12px;
 			text-align: left;
@@ -28,15 +31,31 @@
 			width: 100px;
 			height: 100px;
 		}
+		ul{
+			width: 100%;
+			list-style: none;
+		}
+		li{
+			text-align: center;
+			float: left; 
+			border: 1px solid #dfdfdf; 
+		}
+		li a{
+			text-decoration:none;
+			color:#123;
+			display: block; 	
+		}
+		li:hover{ 
+			background-color:#979797;
+			color:#fff;
+		}
 		#table_div{
 			width: 1300px;
 			height: auto;
-			border: 1px solid #c4c4c4;
 			margin: 0 auto;
 		}
 		#page{
 			height: 40px;
-			text-align: right;
 			margin-top:10px;
 		}
 	</style>
@@ -49,13 +68,12 @@
 		<table id="table" cellspacing="0" cellpadding="0">
 			<thead>
 				<tr>
-					<th>课程ID</th>
-					<th>课程封面</th>
-					<th>课程名称</th>
-					<th>课程专业</th>
-					<th>课程介绍</th>
-					<th>时间</th>
-					<th>发布者ID</th>
+					<th>用户ID</th>
+					<th>认证图片</th>
+					<th>姓名</th>
+					<th>性别</th>
+					<th>学校专业</th>
+					<th>联系方式</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -64,15 +82,14 @@
 		</table>
 		<div id="page">
 			<div>
-				<span>页码1/3(22条记录)</span>
-				<button>上一页</button>
-				<button>1</button>
-				<button>2</button>
-				<button>3</button>
-				<button>下一页</button>
-				<span>每页5条记录</span>
-				<input type="text" name="num">
-				<button>GO</button>
+				<ul>
+					<li style="width: 60px;"><a href="#">上一页</a></li>
+					<li style="width: 25px;"><a href="#">1</a></li>
+					<li style="width: 25px;"><a href="#">2</a></li>
+					<li style="width: 25px;"><a href="#">3</a></li>
+					<li style="width: 60px;"><a href="#">下一页</a></li>
+				</ul>
+				<span style="color: #8d8d8d;">&nbsp;&nbsp;共有8条,每页显示：20条</span>
 			</div>
 		</div>
 	</div>
@@ -93,10 +110,12 @@
 				$.ajax(
                 {
                     type:"POST",
-                    url:"<?php echo site_url('Admin/cou_list')?>",
-                    data:{"token":sessionStorage.getItem('token')},
+                    url:"<?php echo site_url('Admin/users_list')?>",
                     dataType:"JSON",
                     async:false,
+                    beforeSend: function(request) {
+            			request.setRequestHeader("Utoken",sessionStorage.getItem('token'));
+        			},
                     success:function(data){
                                    
                        if(data.type == 400)
@@ -115,25 +134,26 @@
 	                        	var td4 = document.createElement("td");
 	                        	var td5 = document.createElement("td");
 	                        	var td6 = document.createElement("td");
-	                        	var td7 = document.createElement("td");
-	                        	var td8 = document.createElement("td");
+	                        	var td7 = document.createElement("td");                
 	                        	
-	                        	td1.innerHTML = Table.tableinfo[i].c_id;  
-	                        	td3.innerHTML = Table.tableinfo[i].c_name;  
-	                        	td4.innerHTML = Table.tableinfo[i].c_major;  
-	                        	td5.innerHTML = Table.tableinfo[i].c_detail;  
-	                        	td6.innerHTML = "时间："+Table.tableinfo[i].c_time+
-	                        					"<br>地点："+Table.tableinfo[i].c_place+
-	                        					"<br>价格："+Table.tableinfo[i].c_price;  
-	                        	td7.innerHTML = Table.tableinfo[i].c_releaseid;  
+	                        	td1.innerHTML = Table.tableinfo[i].u_id;  
+	                        	td3.innerHTML = Table.tableinfo[i].u_name;  
+	                        	td4.innerHTML = Table.tableinfo[i].u_sex;  
+	                        	td5.innerHTML = "手机号："+Table.tableinfo[i].u_tel+
+	                        					"<br>QQ："+Table.tableinfo[i].u_qq+
+	                        					"<br>邮箱："+Table.tableinfo[i].u_email; 
+
+	                        	td6.innerHTML = "学校："+Table.tableinfo[i].u_sch+
+	                        					"<br>专业："+Table.tableinfo[i].u_major;
+	                       
 	                        	
 	                        	var img = document.createElement("img");
-	                        	img.setAttribute("src",Table.tableinfo[i].c_imgpath);
+	                        	img.setAttribute("src",Table.tableinfo[i].u_authenticate);
 	                        	td2.appendChild(img);
 	                        	//通过审核
 	                        	var a_y = document.createElement("a");
 	                        	a_y.setAttribute("href","javascript:void(0)");//相当于让href属性失效！  
-	        					a_y.setAttribute("onclick","Table.Examine("+Table.tableinfo[i].c_id+")");
+	        					a_y.setAttribute("onclick","Table.Examine("+Table.tableinfo[i].u_id+")");
 	                        	a_y.innerHTML = '通过';
 
 	                        	var a_n = document.createElement("a");
@@ -143,9 +163,9 @@
 	                        
 	                        	var span = document.createElement("span");
 	                        	span.innerHTML = ' | ';
-	                        	td8.appendChild(a_y);
-	                        	td8.appendChild(span);
-								td8.appendChild(a_n);	                        	
+	                        	td7.appendChild(a_y);
+	                        	td7.appendChild(span);
+								td7.appendChild(a_n);	                        	
 
 	                        	tr.appendChild(td1);
 	                        	tr.appendChild(td2);
@@ -154,7 +174,7 @@
 	                        	tr.appendChild(td5);
 	                        	tr.appendChild(td6);
 	                        	tr.appendChild(td7);
-	                        	tr.appendChild(td8);
+	                        	
 
 	                        	document.getElementById("tbody").appendChild(tr);
 	                        }
@@ -173,7 +193,8 @@
 			},
 			Examine:function(c_id)
 			{
-				$.ajax(
+				alert(c_id);
+				/*$.ajax(
 	                {
 	                    type:"POST",
 	                    url:"<?php echo site_url('Admin/cou_examine')?>",
@@ -192,7 +213,7 @@
 	                    	}
 	                    	
 	                    }
-	                });
+	                });*/
 			}
 		};
 
