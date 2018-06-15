@@ -86,7 +86,22 @@ class Admin extends CI_Controller
     {
     	$this->load->view('home/addadmin.html');
     }
-   
+   	//show alterper
+   	public function alterper()
+   	{
+   		$this->load->view('home/alterper.html');
+   	}
+   	//show admininfo
+   	public function admininfo()
+   	{
+   		$this->load->view('home/admininfo.html');
+   	}
+   	//show pushad
+   	public function pushad()
+   	{
+   		$this->load->view('home/pushad.html');
+   	}
+
 	/**
 	*get table data
 	*/

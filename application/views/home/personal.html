@@ -8,22 +8,29 @@
             margin:0;  
             padding:0;  
         } 
-        td{
-			border: 1px solid #c4c4c4;
-			height: 40px;
-		} 
         #per{
-        	margin-top: 20px;
+        	margin-top: 30px;
 			width: 1300px;
 			font-size: 12px;
 			text-align: left;
 			color:#8d8d8d;
 			font-family: "微软雅黑";
         }
+        #per td{
+			border: 1px solid #c4c4c4;
+			height: 60px;
+		} 
         #table_div{
 			width: 1300px;
 			height: auto;
 			margin: 0 auto;
+		}
+		#power_table{
+			
+		}
+		#power_table{
+			width: 200px;
+			height: 200px;
 		}
 		.name{
 			width: 150px;
@@ -59,8 +66,33 @@
  			<td class="value">管理员</td>
  		</tr>
  		<tr>
- 			<td style="padding-right: 10px;height: 200px;text-align: right;">权限</td>
- 			<td style="padding-left: 10px;height: 300px;">aaa</td>
+ 			<td style="padding-right: 10px;height: 250px;text-align: right;">权限</td>
+ 			<td style="padding-left: 10px;height: 250px;text-align: center;">
+ 				<table id="power_table" cellspacing="0" cellpadding="0">
+ 					<tr>
+ 						<td><span>审核课程</span>
+ 							<input type="checkbox" name="审核" checked="true" disabled="disabled">
+ 						</td>
+ 						<td>
+ 							<span>认证用户</span>
+ 							<input type="checkbox" name="认证" disabled="disabled" disabled="disabled">
+ 						</td>
+ 					</tr>
+ 					<tr>
+ 						<td>
+ 							<span>推送消息</span>
+ 							<input type="checkbox" name="推送" checked="true" disabled="disabled">
+ 						</td>
+ 						<td>
+ 							<span>添加管理</span>
+ 							<input type="checkbox" name="添加" disabled="disabled">
+ 						</td>
+ 					</tr>
+ 				</table>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<td colspan="2" style="text-align: center;"><button>修改</button></td>
  		</tr>
  	</table>
  </div>
