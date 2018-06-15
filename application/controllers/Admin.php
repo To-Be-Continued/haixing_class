@@ -76,6 +76,17 @@ class Admin extends CI_Controller
 		$this->load->view('home/pushmessage.html');
 	} 
 
+    //show personal
+    public function personal()
+    {
+    	$this->load->view('home/personal.html');
+    }
+    //show addadmin
+    public function addadmin()
+    {
+    	$this->load->view('home/addadmin.html');
+    }
+   
 	/**
 	*get table data
 	*/

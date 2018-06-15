@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+	<script type="text/javascript" src="<?php echo base_url('styles/js/');?>jquery.min.js"></script>
 	<head>
 		<style type="text/css">
 			body{
@@ -32,14 +33,55 @@
 				color:#fff
 			}
 		</style>
+	</script>
 	</head>
 	<body>
-		<ul>
-			<li><a href="<?php echo site_url('Admin/courses')?>" target="main">课程审核</a></li>
+		<ul id="ul1">
+			<li>
+				<a href="<?php echo site_url('Admin/courses')?>" target="main">课程审核</a></li>
 			<li><a href="<?php echo site_url('Admin/users')?>" target="main">身份认证</a></li>
 			<li><a href="<?php echo site_url('Admin/pushmessage')?>" target="main">系统推送</a></li>
-			<li><a href="#">添加管理员</a></li>
-			<li><a href="#">个人信息</a></li>
+			<li>
+				<div class="selected" id="1"><a href="#">管理员</a></div>
+				<div id="a" style="display: none;">
+					<a href="<?php echo site_url('Admin/addadmin')?>" target="main">管理员信息</a>
+					<a href="<?php echo site_url('Admin/addadmin')?>" target="main">添加管理员</a>
+				<div>
+				
+			</li>
+			<li>
+				<div class="selected" id="2"><a href="#">个人信息</a></div>
+				<div id="b" style="display: none;">
+					<a href="<?php echo site_url('Admin/personal')?>" target="main">查看个人信息</a>
+					<a href="#" >修改个人信息</a>
+				</div>
+			</li>
 		</ul>
+	<script type="text/javascript">
+		$('.selected').on('click', function () {  
+       		if(this.id == '1')
+       		{
+       			var div =document.getElementById('a');
+       			if(div.style.display=='none')
+       			{
+       				div.style.display='block';
+       			}else
+       			{
+       				div.style.display='none';
+       			}
+       		}else
+       		{
+       			var div =document.getElementById('b');
+       			if(div.style.display=='none')
+       			{
+       				div.style.display='block';
+       			}else
+       			{
+       				div.style.display='none';
+       			}
+       		}
+   		 });  
+
+	</script>
 	</body>
 </html>

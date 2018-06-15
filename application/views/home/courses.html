@@ -150,8 +150,12 @@
 	                        	td7.innerHTML = Table.tableinfo[i].c_releaseid;  
 	                        	
 	                        	var img = document.createElement("img");
-	                        	img.setAttribute("src",Table.tableinfo[i].c_imgpath);
-	                        	td2.appendChild(img);
+	                        	if(Table.tableinfo[i].c_imgpath != null)
+	                        	{
+	                        		img.setAttribute("src",Table.tableinfo[i].c_imgpath);
+	                        		td2.appendChild(img);
+	                        	}
+	   
 	                        	//通过审核
 	                        	var a_y = document.createElement("a");
 	                        	a_y.setAttribute("href","javascript:void(0)");//相当于让href属性失效！  
